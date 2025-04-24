@@ -2,6 +2,7 @@
 using Core;
 using Battle;
 using text_adventure_game.RPGTextGame.Battle.Enemies;
+using Enemies;
 
 namespace text_adventure_game
 {
@@ -9,8 +10,15 @@ namespace text_adventure_game
     {
         static void Main(string[] args)
         {
+            
             Game.Start();
-            BattleManager.PlayerTurn(Game.currentPlayer, new Encapuzado());
+            Enemy enemy = new Encapuzado();
+            while (Game.currentPlayer.IsAlive && enemy.IsAlive)
+            {
+                BattleManager.PlayerTurn(Game.currentPlayer, enemy);
+                Console.Clear();
+                BattleManager.ShowBattleStatus(Game.currentPlayer, enemy);
+            }
         }
     }
 }

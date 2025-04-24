@@ -8,6 +8,9 @@ namespace EntityPlayer {
         public int MaxHealth { get; set; }
         public int Health { get; set; }
         public int Strength { get; set; }
+        public int Defense { get; set; }
+        public int BaseDefense { get; set; }
+        public int Potions { get; set; }
         public int RequiredExperience { get; set; }
         public int Experience { get; set; }
         public int Level { get; set; }
@@ -20,6 +23,8 @@ namespace EntityPlayer {
             MaxHealth = health;
             Health = MaxHealth;
             Strength = strenght;
+            BaseDefense = 0;
+            Defense = 0;
             RequiredExperience = 50;
             Experience = 0;
             Level = 1;
@@ -27,9 +32,19 @@ namespace EntityPlayer {
         }
 
         public void Heal(int amount) {
-            Health += amount;
-            if (Health > MaxHealth) {
-                Health = MaxHealth;
+            if (Potions >= 1) {
+                int healthBefore = Health;
+                Health += amount;
+
+                if (Health > MaxHealth) {
+                    Health = MaxHealth;
+                }
+
+                int healedAmount = Health - healthBefore;
+                Console.WriteLine($"Você toma uma poção e curou {healedAmount}");
+
+            } else {
+                Console.WriteLine("Você procura na sua bolsa... mas não encontra nada");
             }
         }
 
@@ -69,8 +84,12 @@ namespace EntityPlayer {
             }
         }
 
+        public void Defend() {
+            Defense = BaseDefense + 5;
+        }
+
         public void VerifyLevelUp() {
-            while(Experience >= RequiredExperience) {
+            while (Experience >= RequiredExperience) {
                 LevelUp();
                 Experience -= RequiredExperience;
                 RequiredExperience += 30;

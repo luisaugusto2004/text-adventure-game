@@ -6,7 +6,8 @@ namespace Scripts
 {
     class ScriptManager
     {
-        public static void ScriptedIntroScene() {
+        public static void ScriptedIntroScene()
+        {
             TextPrinter.Print($"Essa é a história da sua morte", 25);
             Console.ReadLine();
             Console.Clear();
