@@ -1,4 +1,5 @@
 ﻿using EntityPlayer;
+using Util;
 using System;
 
 namespace Core{
@@ -8,7 +9,7 @@ namespace Core{
 
         public static void Start() {
             Console.ForegroundColor = ConsoleColor.Green;
-            Print("Insira seu nome: ", 50);
+            TextPrinter.Print("Insira seu nome: ", 50);
             currentPlayer.Name = Console.ReadLine();
 
             Console.Clear();
@@ -16,19 +17,19 @@ namespace Core{
         }
 
         public static void ScriptedIntroScene() {
-            Print($"Essa é a história da sua morte", 25);
+            TextPrinter.Print($"Essa é a história da sua morte", 25);
             Console.ReadLine();
             Console.Clear();
-            Print("Depois de ver essa merda, não tem mais volta.", 25);
+            TextPrinter.Print("Depois de ver essa merda, não tem mais volta.", 25);
             Console.ReadLine();
             Console.Clear();
-            Print("Você vai encontrar coisas tão fodidas que a situação global atual vai parecer perfeitamente sensata em comparação.", 25);
+            TextPrinter.Print("Você vai encontrar coisas tão fodidas que a situação global atual vai parecer perfeitamente sensata em comparação.", 25);
             Console.ReadLine();
             Console.Clear();
             if (currentPlayer.Name == "")
-                Print("Viver ou morrer, a escolha é sua, estranho.", 100);
+                TextPrinter.Print("Viver ou morrer, a escolha é sua, estranho.", 100);
             else
-                Print($"Viver ou morrer, a escolha é sua, {currentPlayer.Name}", 100);
+                TextPrinter.Print($"Viver ou morrer, a escolha é sua, {currentPlayer.Name}", 100);
             Console.ReadLine();
             Console.Clear();
             Console.WriteLine("Você ouve seu coração batendo mais que tudo");
@@ -41,15 +42,7 @@ namespace Core{
             Console.WriteLine("E você começa a sentir o seu corpo ficar bambo diante do seu fim");
             Console.WriteLine("Frente a frente com a sua morte.");
             Console.ReadLine();
-            Print("Viver ou morrer, a escolha é sua.", 100);
-        }
-
-        public static void Print(string text, int speed) {
-            foreach (char c in text) {
-                Console.Write(c);
-                System.Threading.Thread.Sleep(speed);
-            }
-            Console.WriteLine();
+            TextPrinter.Print("Viver ou morrer, a escolha é sua.", 100);
         }
     }
 }
