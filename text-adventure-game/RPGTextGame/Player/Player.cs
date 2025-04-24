@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
 using Enemies;
+using Scripts;
 
 namespace EntityPlayer {
     class Player {
@@ -74,10 +75,15 @@ namespace EntityPlayer {
             Console.WriteLine($"{Name} atacou {monster.Name} e causou {attack} de dano.");
 
             monster.TakeDamage(attack);
-
-            if (!monster.IsAlive) {
+            if(monster.Name.ToLower() == "encapuzado" && !monster.IsAlive)
+            {
+                ScriptManager.HandleSecretEndingWhenDefeated();
+                return;
+            }
+            if (!monster.IsAlive)
+            {
                 Console.WriteLine($"{monster.Name} derrotado!");
-                Console.WriteLine($"Você recebeu {monster.ExperienceGain}!");
+                Console.WriteLine($"Você recebeu {monster.ExperienceGain} XP!");
 
                 GainExperience(monster.ExperienceGain);
                 VerifyLevelUp();

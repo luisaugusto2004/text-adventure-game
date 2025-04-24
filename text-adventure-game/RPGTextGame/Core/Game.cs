@@ -8,6 +8,8 @@ namespace Core{
 
         public static Player currentPlayer = new Player();
         public static Random GlobalRandom = new Random();
+        public static bool profeciaAtivada = false;
+
 
         public static void Start() {
             Console.ForegroundColor = ConsoleColor.Green;
@@ -15,7 +17,6 @@ namespace Core{
             currentPlayer = new Player(Console.ReadLine(), 30, 10);
 
             Console.Clear();
-            ScriptManager.ScriptedIntroScene();
         }
     }
 }

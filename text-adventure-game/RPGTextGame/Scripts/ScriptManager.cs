@@ -1,4 +1,5 @@
 ﻿using Core;
+using EntityPlayer;
 using System;
 using Util;
 
@@ -35,6 +36,41 @@ namespace Scripts
             Console.ReadLine();
             TextPrinter.Print("Viver ou morrer, a escolha é sua.", 100);
             Console.Clear();
+        }
+
+        public static void HandleSecretEnding()
+        {
+            Console.Clear();
+            TextPrinter.Print("O mundo para.", 50);
+            Console.ReadLine();
+            TextPrinter.Print("O tempo se dobra como um papel queimando pelas bordas.", 50);
+            Console.ReadLine();
+            TextPrinter.Print("A névoa ao redor do encapuzado hesita. Pela primeira vez, ele recua um passo.", 50);
+            Console.ReadLine();
+            TextPrinter.Print("Sua pele arrepia. O coração, antes hesitante, bate com a força de mil trovões.", 50);
+            Console.ReadLine();
+            TextPrinter.Print("Você não sabe por quê, mas sabe que essa palavra... era a chave.", 50);
+            Console.ReadLine();
+            Console.Clear();
+            TextPrinter.Print("A profecia desperta. Você foi escolhido. O portador da centelha que recusa o fim.", 50);
+            TextPrinter.Print("Seu corpo se ilumina com uma chama antiga, esquecida pelas eras.", 50);
+            Console.ReadLine();
+            TextPrinter.Print("O ser encapuzado fala pela primeira vez:\r\n“...impossível.”", 50);
+            TextPrinter.Print("A verdadeira batalha começa!", 50);
+            Console.ReadLine();
+        }
+
+        public static void HandleSecretEndingWhenDefeated()
+        {
+            Console.Clear();
+            TextPrinter.Print("Com um grito final, o Encapuzado cai, derrotado pelo poder da profecia.", 50);
+            Console.ReadLine();
+            TextPrinter.Print("Sua forma escura desintegra-se em sombras, deixando para trás apenas um vazio frio.", 50);
+            Console.ReadLine();
+            TextPrinter.Print("O mundo ao seu redor parece suspenso no tempo, a névoa se dissipa lentamente.", 50);
+            Console.ReadLine();
+            TextPrinter.Print("Você se sente diferente. O peso da profecia pesa sobre seus ombros, mas você é mais forte.", 50);
+            TextPrinter.Print("Você se levantou contra o destino e venceu. A verdadeira batalha, agora, é sua.", 50);
         }
     }
 }
