@@ -1,0 +1,55 @@
+﻿using EntityPlayer;
+using System;
+
+namespace Core{
+    class Game {
+
+        public static Player currentPlayer = new Player();
+
+        public static void Start() {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Print("Insira seu nome: ", 50);
+            currentPlayer.Name = Console.ReadLine();
+
+            Console.Clear();
+            ScriptedIntroScene();
+        }
+
+        public static void ScriptedIntroScene() {
+            Print($"Essa é a história da sua morte", 25);
+            Console.ReadLine();
+            Console.Clear();
+            Print("Depois de ver essa merda, não tem mais volta.", 25);
+            Console.ReadLine();
+            Console.Clear();
+            Print("Você vai encontrar coisas tão fodidas que a situação global atual vai parecer perfeitamente sensata em comparação.", 25);
+            Console.ReadLine();
+            Console.Clear();
+            if (currentPlayer.Name == "")
+                Print("Viver ou morrer, a escolha é sua, estranho.", 100);
+            else
+                Print($"Viver ou morrer, a escolha é sua, {currentPlayer.Name}", 100);
+            Console.ReadLine();
+            Console.Clear();
+            Console.WriteLine("Você ouve seu coração batendo mais que tudo");
+            Console.ReadLine();
+            Console.WriteLine("A sua visão atrapalhada pelo sol começa a centralizar naquilo");
+            Console.WriteLine("E você finalmente se lembra do que está na sua frente");
+            Console.ReadLine();
+            Console.WriteLine("Um ser encapuzado envolto em névoa e trevas vivas.");
+            Console.WriteLine("O céu começa a choviscar");
+            Console.WriteLine("E você começa a sentir o seu corpo ficar bambo diante do seu fim");
+            Console.WriteLine("Frente a frente com a sua morte.");
+            Console.ReadLine();
+            Print("Viver ou morrer, a escolha é sua.", 100);
+        }
+
+        public static void Print(string text, int speed) {
+            foreach (char c in text) {
+                Console.Write(c);
+                System.Threading.Thread.Sleep(speed);
+            }
+            Console.WriteLine();
+        }
+    }
+}
