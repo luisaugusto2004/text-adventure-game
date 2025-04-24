@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Battle {
+namespace Enemies {
     abstract class Enemy {
         public string Name { get; set; }
         public int MaxHealth { get; set; }
@@ -23,7 +23,12 @@ namespace Battle {
 
         public void TakeDamage(int amount) {
             Health -= amount;
+            if(Health < 0) {
+                Health = 0;
+            }
         }
+
+        public bool IsAlive => Health > 0;
 
         public abstract void Attack(Player player, Random random);
     }

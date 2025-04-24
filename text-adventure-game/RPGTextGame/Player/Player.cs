@@ -1,7 +1,8 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
+using Enemies;
 
-namespace EntityPlayer
-{
+namespace EntityPlayer {
     class Player {
         public string Name { get; set; }
         public int MaxHealth { get; set; }
@@ -12,7 +13,7 @@ namespace EntityPlayer
         public int Level { get; set; }
         public bool IsAlive { get; set; }
 
-        public Player() {}
+        public Player() { }
 
         public Player(string name, int health, int strenght) {
             Name = name;
@@ -50,13 +51,31 @@ namespace EntityPlayer
             Strength += 5;
         }
 
+        public void Attack(Enemy monster) {
+            Random rand = new Random();
+
+            int attack = Strength + (rand.Next(1, 6));
+
+            Console.WriteLine($"{Name} atacou {monster.Name} e causou {attack} de dano.");
+
+            monster.TakeDamage(attack);
+
+            if (!monster.IsAlive) {
+                Console.WriteLine($"{monster.Name} derrotado!");
+                Console.WriteLine($"Você recebeu {monster.ExperienceGain}!");
+
+                GainExperience(monster.ExperienceGain);
+                VerifyLevelUp();
+            }
+        }
+
         public void VerifyLevelUp() {
-            if (Experience >= RequiredExperience) {
+            while(Experience >= RequiredExperience) {
                 LevelUp();
                 Experience -= RequiredExperience;
                 RequiredExperience += 30;
             }
-        }   
+        }
 
         public override string ToString() {
             StringBuilder sb = new StringBuilder();

@@ -29,10 +29,11 @@ namespace Scripts
             Console.ReadLine();
             Console.WriteLine("Um ser encapuzado envolto em névoa e trevas vivas.");
             Console.WriteLine("O céu começa a choviscar");
-            Console.WriteLine("E você começa a sentir o seu corpo ficar bambo diante do seu fim");
+            Console.WriteLine("Você começa a sentir o seu corpo ficar bambo diante do seu fim");
             Console.WriteLine("Frente a frente com a sua morte.");
             Console.ReadLine();
             TextPrinter.Print("Viver ou morrer, a escolha é sua.", 100);
+            Console.Clear();
         }
     }
 }
