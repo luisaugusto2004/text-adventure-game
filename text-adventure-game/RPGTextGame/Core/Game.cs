@@ -8,7 +8,8 @@ namespace Core{
 
         public static Player currentPlayer = new Player();
         public static Random GlobalRandom = new Random();
-        public static bool profeciaAtivada = false;
+        public static bool ProfeciaAtivada = false;
+        public static int Turns = 1;
 
 
         public static void Start() {

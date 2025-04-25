@@ -3,8 +3,10 @@ using System.Text;
 using Enemies;
 using Scripts;
 
-namespace EntityPlayer {
-    class Player {
+namespace EntityPlayer
+{
+    class Player
+    {
         public string Name { get; set; }
         public int MaxHealth { get; set; }
         public int Health { get; set; }
@@ -19,7 +21,8 @@ namespace EntityPlayer {
 
         public Player() { }
 
-        public Player(string name, int health, int strenght) {
+        public Player(string name, int health, int strenght)
+        {
             Name = name;
             MaxHealth = health;
             Health = MaxHealth;
@@ -32,42 +35,52 @@ namespace EntityPlayer {
             IsAlive = true;
         }
 
-        public void Heal(int amount) {
-            if (Potions >= 1) {
+        public void Heal(int amount)
+        {
+            if (Potions >= 1)
+            {
                 int healthBefore = Health;
                 Health += amount;
 
-                if (Health > MaxHealth) {
+                if (Health > MaxHealth)
+                {
                     Health = MaxHealth;
                 }
 
                 int healedAmount = Health - healthBefore;
                 Console.WriteLine($"Você toma uma poção e curou {healedAmount}");
 
-            } else {
+            }
+            else
+            {
                 Console.WriteLine("Você procura na sua bolsa... mas não encontra nada");
             }
         }
 
-        public void TakeDamage(int amount) {
+        public void TakeDamage(int amount)
+        {
             Health -= amount;
-            if (Health <= 0) {
+            if (Health <= 0)
+            {
                 IsAlive = false;
             }
         }
 
-        public void GainExperience(int amount) {
+        public void GainExperience(int amount)
+        {
             Experience += amount;
         }
 
-        public void LevelUp() {
+        public void LevelUp()
+        {
             Level++;
             MaxHealth += 10;
             Health = MaxHealth;
             Strength += 5;
         }
 
-        public void Attack(Enemy monster) {
+        public void Attack(Enemy monster)
+        {
             Random rand = new Random();
 
             int attack = Strength + (rand.Next(1, 6));
@@ -75,11 +88,7 @@ namespace EntityPlayer {
             Console.WriteLine($"{Name} atacou {monster.Name} e causou {attack} de dano.");
 
             monster.TakeDamage(attack);
-            if(monster.Name.ToLower() == "encapuzado" && !monster.IsAlive)
-            {
-                ScriptManager.HandleSecretEndingWhenDefeated();
-                return;
-            }
+
             if (!monster.IsAlive)
             {
                 Console.WriteLine($"{monster.Name} derrotado!");
@@ -90,19 +99,23 @@ namespace EntityPlayer {
             }
         }
 
-        public void Defend() {
+        public void Defend()
+        {
             Defense = BaseDefense + 5;
         }
 
-        public void VerifyLevelUp() {
-            while (Experience >= RequiredExperience) {
+        public void VerifyLevelUp()
+        {
+            while (Experience >= RequiredExperience)
+            {
                 LevelUp();
                 Experience -= RequiredExperience;
                 RequiredExperience += 30;
             }
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"Name: {Name}");
             sb.AppendLine($"Level: {Level}");

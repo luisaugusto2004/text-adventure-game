@@ -10,8 +10,6 @@ namespace Battle
     class BattleManager
     {
 
-        static Random random = new Random();
-
         public static void StartFight(Player player, Enemy enemy, bool isScripted = false)
         {
             //Fight loop
@@ -34,20 +32,26 @@ namespace Battle
                 return;
             }
 
-            
 
-            if (input == "viver" && monster.Name.ToLower() == "encapuzado" && !Game.profeciaAtivada)
+
+            if (input == "viver" && monster.Name.ToLower() == "encapuzado" && !Game.ProfeciaAtivada)
             {
-                Game.profeciaAtivada = true;                
+                Game.ProfeciaAtivada = true;
                 player.Strength += 999;
                 player.MaxHealth += 999;
                 player.Health = player.MaxHealth;
                 ScriptManager.HandleSecretEnding();
-                
+
             }
             else if (input == "a")
             {
                 player.Attack(monster);
+                if (monster.Name.ToLower() == "encapuzado" && !monster.IsAlive)
+                {
+                    ScriptManager.HandleSecretEndingWhenDefeated();
+                    Console.ReadLine();
+                    return;
+                }
                 Console.ReadLine();
             }
             else if (input == "b")
@@ -79,21 +83,51 @@ namespace Battle
             }
         }
 
-        public static void EnemyTurn()
+        public static void EnemyTurn(Player player, Enemy monster)
         {
+            if (monster.Name.ToLower() == "encapuzado" && !Game.ProfeciaAtivada && Game.Turns <= 3)
+            {
+                switch (Game.Turns)
+                {
+                    case 1:
+                        TextPrinter.Print("O encapuzado observa você em silêncio. Seus olhos brilham sob a sombra do capuz.", 30);
+                        Game.Turns++;
+                        Console.ReadLine();
+                        return;
+                    case 2:
+                        TextPrinter.Print("“Por um segundo, você vê algo atrás dele. Sua própria silhueta... caída no chão.”", 30);
+                        Game.Turns++;
+                        Console.ReadLine();
+                        return;
+                    case 3:
+                        TextPrinter.Print("“Sua mente treme. Uma voz surge diretamente em seus pensamentos: ‘Você acha que pode mudar o destino?’”", 30);
+                        Game.Turns++;
+                        Console.ReadLine();
+                        return;
+                    default:
+                        TextPrinter.Print("O encapuzado permanece imóvel, mas você sente que ele está apenas aguardando seu fim.", 30);
+                        Console.ReadLine();
+                        return;
+                }
+            }
 
+            Game.Turns++;
+            monster.Attack(player, Game.GlobalRandom);
+            Console.ReadLine();
         }
 
         public static void ShowBattleStatus(Player player, Enemy monster)
         {
             Console.WriteLine("=== STATUS DA BATALHA ===");
             Console.WriteLine($"Você: {player.Health}/{player.MaxHealth} HP");
-            if(monster.Name.ToLower() == "encapuzado")
+            if (monster.Name.ToLower() == "encapuzado")
             {
                 Console.WriteLine("Encapuzado: ??/??");
+                Console.WriteLine($"Turno: {Game.Turns}");
                 return;
             }
             Console.WriteLine($"{monster.Name}: {monster.Health}/{monster.MaxHealth} HP");
+            Console.WriteLine($"Turno: {Game.Turns}");
         }
     }
 }
