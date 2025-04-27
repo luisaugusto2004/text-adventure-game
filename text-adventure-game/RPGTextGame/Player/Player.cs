@@ -7,17 +7,17 @@ namespace EntityPlayer
 {
     class Player
     {
-        public string Name { get; set; }
-        public int MaxHealth { get; set; }
-        public int Health { get; set; }
-        public int Strength { get; set; }
-        public int Defense { get; set; }
-        public int BaseDefense { get; set; }
-        public int Potions { get; set; }
-        public int RequiredExperience { get; set; }
-        public int Experience { get; set; }
-        public int Level { get; set; }
-        public bool IsAlive { get; set; }
+        public string Name { get; private set; } = string.Empty;
+        public int MaxHealth { get; private set; }
+        public int Health { get; private set; }
+        public int Strength { get; private set; }
+        public int Defense { get; private set; }
+        public int BaseDefense { get; private set; }
+        public int Potions { get; private set; }
+        public int RequiredExperience { get; private set; }
+        public int Experience { get; private set; }
+        public int Level { get; private set; }
+        public bool IsAlive { get; private set; }
 
         public Player() { }
 
@@ -28,11 +28,19 @@ namespace EntityPlayer
             Health = MaxHealth;
             Strength = strenght;
             BaseDefense = 0;
+            Potions = 0;
             Defense = 0;
             RequiredExperience = 50;
             Experience = 0;
             Level = 1;
             IsAlive = true;
+        }
+
+        public void ProphecyActivated()
+        {
+            MaxHealth += 999;
+            Health = MaxHealth;
+            Strength += 999;
         }
 
         public void Heal(int amount)
@@ -48,7 +56,7 @@ namespace EntityPlayer
                 }
 
                 int healedAmount = Health - healthBefore;
-                Console.WriteLine($"Você toma uma poção e curou {healedAmount}");
+                Console.WriteLine($"Você tomou uma poção e curou {healedAmount}");
 
             }
             else
@@ -79,11 +87,9 @@ namespace EntityPlayer
             Strength += 5;
         }
 
-        public void Attack(Enemy monster)
+        public void Attack(Enemy monster, Random random)
         {
-            Random rand = new Random();
-
-            int attack = Strength + (rand.Next(1, 6));
+            int attack = Strength + (random.Next(1, 6));
 
             Console.WriteLine($"{Name} atacou {monster.Name} e causou {attack} de dano.");
 
@@ -102,6 +108,11 @@ namespace EntityPlayer
         public void Defend()
         {
             Defense = BaseDefense + 5;
+        }
+
+        public void SetBaseDefense()
+        {
+            Defense = BaseDefense;
         }
 
         public void VerifyLevelUp()

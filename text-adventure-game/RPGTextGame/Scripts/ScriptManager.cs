@@ -35,6 +35,7 @@ namespace Scripts
             Console.WriteLine("Frente a frente com a sua morte.");
             Console.ReadLine();
             TextPrinter.Print("Viver ou morrer, a escolha é sua.", 100);
+            Console.ReadLine();
             Console.Clear();
         }
 

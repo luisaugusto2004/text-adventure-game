@@ -2,6 +2,7 @@
 using Util;
 using Scripts;
 using System;
+using Battle;
 
 namespace Core{
     class Game {
@@ -16,7 +17,9 @@ namespace Core{
             Console.ForegroundColor = ConsoleColor.Green;
             TextPrinter.Print("Insira seu nome: ", 50);
             currentPlayer = new Player(Console.ReadLine(), 30, 10);
-
+            Console.Clear();
+            ScriptManager.ScriptedIntroScene();
+            Encounter.FirstEncounter();
             Console.Clear();
         }
     }

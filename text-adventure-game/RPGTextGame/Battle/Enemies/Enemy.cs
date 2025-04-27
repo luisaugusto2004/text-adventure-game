@@ -5,11 +5,11 @@ namespace Enemies
 {
     abstract class Enemy
     {
-        public string Name { get; set; }
-        public int MaxHealth { get; set; }
-        public int Health { get; set; }
-        public int Strength { get; set; }
-        public int ExperienceGain { get; set; }
+        public string Name { get; private set; }
+        public int MaxHealth { get; private set; }
+        public int Health { get; private set; }
+        public int Strength { get; private set; }
+        public int ExperienceGain { get; private set; }
 
         public Enemy(string name, int health, int strenght, int experienceGain)
         {

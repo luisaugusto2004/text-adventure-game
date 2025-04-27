@@ -11,16 +11,7 @@ namespace text_adventure_game
         static void Main(string[] args)
         {
             Game.Start();
-            Enemy enemy = new Encapuzado();
-            while (Game.currentPlayer.IsAlive && enemy.IsAlive)
-            {
-                BattleManager.ShowBattleStatus(Game.currentPlayer, enemy);
-                Console.WriteLine();
-                BattleManager.PlayerTurn(Game.currentPlayer, enemy);
-                Console.Clear();
-                BattleManager.EnemyTurn(Game.currentPlayer, enemy);
-                Console.Clear();
-            }
+            
         }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using Util;
 using Core;
 using Scripts;
+using System.Threading;
 
 namespace Battle
 {
@@ -12,16 +13,44 @@ namespace Battle
 
         public static void StartFight(Player player, Enemy enemy, bool isScripted = false)
         {
-            //Fight loop
+            while (Game.currentPlayer.IsAlive && enemy.IsAlive)
+            {
+                BattleManager.ShowBattleStatus(player, enemy);
+                Console.WriteLine();
+                BattleManager.PlayerTurn(Game.currentPlayer, enemy);
+                Console.Clear();
+                if (isScripted)
+                {
+                    if (enemy.Name.ToLower() == "encapuzado" && !enemy.IsAlive)
+                    {
+                        ScriptManager.HandleSecretEndingWhenDefeated();
+                        Console.ReadLine();
+                        return;
+                    }
+                }
+                ShowBattleStatus(player, enemy);
+                Console.WriteLine();
+                BattleManager.EnemyTurn(Game.currentPlayer, enemy);
+                if (enemy.Name.ToLower() == "encapuzado" && !Game.currentPlayer.IsAlive)
+                {
+                    Console.Clear();
+                    TextPrinter.Print("Você não tem nome aqui, Pereça.", 70);
+                    Console.ReadLine();
+                    Console.Clear();
+                    //ScriptManager.ScriptedPostFightScene();
+                    return;
+                }
+                Console.Clear();
+            }
         }
 
         public static void PlayerTurn(Player player, Enemy monster)
         {
-            player.Defense = player.BaseDefense;
+            player.SetBaseDefense();
 
             Console.WriteLine("=============================");
-            Console.WriteLine("| [a] Atacar | [b] Defender |");
-            Console.WriteLine("| [c] Curar  | [d] Correr   |");
+            Console.WriteLine("| [a] Atacar | [d] Defender |");
+            Console.WriteLine("| [h] Curar  | [r] Correr   |");
             Console.WriteLine("=============================");
             Console.Write("Digite sua ação: ");
             string input = Console.ReadLine()?.Trim().ToLower();
@@ -32,40 +61,35 @@ namespace Battle
                 return;
             }
 
-
-
             if (input == "viver" && monster.Name.ToLower() == "encapuzado" && !Game.ProfeciaAtivada)
             {
                 Game.ProfeciaAtivada = true;
-                player.Strength += 999;
-                player.MaxHealth += 999;
-                player.Health = player.MaxHealth;
+                player.ProphecyActivated();
                 ScriptManager.HandleSecretEnding();
 
             }
             else if (input == "a")
             {
-                player.Attack(monster);
-                if (monster.Name.ToLower() == "encapuzado" && !monster.IsAlive)
+                player.Attack(monster, Game.GlobalRandom);   
+                if(monster.Name.ToLower() == "encapuzado" && !monster.IsAlive)
                 {
-                    ScriptManager.HandleSecretEndingWhenDefeated();
-                    Console.ReadLine();
+                    Console.Clear();
                     return;
                 }
                 Console.ReadLine();
             }
-            else if (input == "b")
+            else if (input == "d")
             {
                 player.Defend();
                 Console.WriteLine("Você levanta os braços entra em guarda.");
                 Console.ReadLine();
             }
-            else if (input == "c")
+            else if (input == "h")
             {
                 player.Heal(Game.GlobalRandom.Next(1, 20));
                 Console.ReadLine();
             }
-            else if (input == "d")
+            else if (input == "r")
             {
                 if (monster.Name.ToLower() == "encapuzado")
                 {
