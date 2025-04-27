@@ -73,5 +73,54 @@ namespace Scripts
             TextPrinter.Print("Você se sente diferente. O peso da profecia pesa sobre seus ombros, mas você é mais forte.", 50);
             TextPrinter.Print("Você se levantou contra o destino e venceu. A verdadeira batalha, agora, é sua.", 50);
         }
+
+        public static void ScriptedScenePostBattle()
+        {
+            Console.Clear();
+            TextPrinter.Print("A última coisa que você sente é o frio... um frio que invade seus ossos.", 40);
+            Console.ReadLine();
+            TextPrinter.Print("Sua visão se apaga. O som do mundo se cala.", 40);
+            Console.ReadLine();
+            TextPrinter.Print("Você morreu.", 60);
+            Console.ReadLine();
+            Console.Clear();
+            TextPrinter.Print("...", 500);
+            Console.ReadLine();
+            TextPrinter.Print("Algo distante... gotas caindo...", 50);
+            Console.ReadLine();
+            TextPrinter.Print("Um cheiro de terra úmida enche seus pulmões. Você respira calmamente, não é como se importasse.", 40);
+            Console.ReadLine();
+            TextPrinter.Print("Seus dedos tocam madeira áspera acima de você.", 40);
+            Console.ReadLine();
+            TextPrinter.Print("Está escuro. Muito escuro.", 40);
+            Console.ReadLine();
+            TextPrinter.Print("Você percebe: está dentro de um caixão.", 50);
+            Console.ReadLine();
+            Console.Clear();
+            TextPrinter.Print("Calmo como se fosse só mais uma segunda-feira. Você empurra... a madeira range, cede...", 40);
+            Console.ReadLine();
+            TextPrinter.Print("Com facilidade, você rompe a tampa e a terra cede.", 40);
+            Console.ReadLine();
+            Console.Clear();
+            TextPrinter.Print("Você emerge de uma cova rasa, em um cemitério esquecido sob a chuva e exclama: ", 40);
+            TextPrinter.Print("Eu vivo, de novo!", 70); // Sangue referência :O
+            Console.ReadLine();
+            TextPrinter.Print("O mundo que você conhecia... não existe mais.", 50);
+            Console.ReadLine();
+            TextPrinter.Print("Este é o tempo da vingança, e nenhuma vida merece ser salva", 50);
+            TextPrinter.Print("Sua verdadeira jornada começa agora.", 60);
+            Console.ReadLine();
+            //   _____
+            //  /     \\
+            // /_______\\
+            //  | . . |
+            //  |  ^  |
+            // /| --- |\\
+            /// |     | \\
+            //  |     |
+            // /       \\
+            ///_________\\
+            //You like my big code?
+        }
     }
 }

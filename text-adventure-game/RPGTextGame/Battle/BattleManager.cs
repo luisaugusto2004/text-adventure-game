@@ -37,7 +37,7 @@ namespace Battle
                     TextPrinter.Print("Você não tem nome aqui, Pereça.", 70);
                     Console.ReadLine();
                     Console.Clear();
-                    //ScriptManager.ScriptedPostFightScene();
+                    ScriptManager.ScriptedScenePostBattle();
                     return;
                 }
                 Console.Clear();
