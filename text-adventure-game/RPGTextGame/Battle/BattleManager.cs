@@ -13,6 +13,7 @@ namespace Battle
 
         public static void StartFight(Player player, Enemy enemy, bool isScripted = false)
         {
+            Game.Turns = 1;
             while (Game.currentPlayer.IsAlive && enemy.IsAlive)
             {
                 BattleManager.ShowBattleStatus(player, enemy);
@@ -25,14 +26,17 @@ namespace Battle
                     {
                         ScriptManager.HandleSecretEndingWhenDefeated();
                         Console.ReadLine();
-                        return;
+                        Environment.Exit(0);
                     }
                 }
                 ShowBattleStatus(player, enemy);
                 Console.WriteLine();
+                if (!enemy.IsAlive)
+                    return;
                 BattleManager.EnemyTurn(Game.currentPlayer, enemy);
                 if (enemy.Name.ToLower() == "encapuzado" && !Game.currentPlayer.IsAlive)
-                {
+                {                    
+                    player.Revive();
                     Console.Clear();
                     TextPrinter.Print("Você não tem nome aqui, Pereça.", 70);
                     Console.ReadLine();

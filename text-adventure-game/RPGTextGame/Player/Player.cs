@@ -24,8 +24,10 @@ namespace EntityPlayer
         public Player(string name, int health, int strenght)
         {
             Name = name;
+            if (Name == string.Empty)
+                Name = "Estranho";
             MaxHealth = health;
-            Health = MaxHealth;
+            Health = health;
             Strength = strenght;
             BaseDefense = 0;
             Potions = 0;
@@ -41,6 +43,14 @@ namespace EntityPlayer
             MaxHealth += 999;
             Health = MaxHealth;
             Strength += 999;
+        }
+
+        public void Revive()
+        {
+            if (IsAlive) return;
+
+            IsAlive = true;
+            Health = MaxHealth;
         }
 
         public void Heal(int amount)
@@ -67,9 +77,12 @@ namespace EntityPlayer
 
         public void TakeDamage(int amount)
         {
+            if (!IsAlive) return;
+
             Health -= amount;
             if (Health <= 0)
             {
+                Health = 0;
                 IsAlive = false;
             }
         }
@@ -89,7 +102,7 @@ namespace EntityPlayer
 
         public void Attack(Enemy monster, Random random)
         {
-            int attack = Strength + (random.Next(1, 6));
+            int attack = Strength + (random.Next(1, 7));
 
             Console.WriteLine($"{Name} atacou {monster.Name} e causou {attack} de dano.");
 

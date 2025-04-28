@@ -2,12 +2,12 @@
 using EntityPlayer;
 using System;
 
-namespace text_adventure_game.RPGTextGame.Battle.Enemies
+namespace Enemies
 {
     sealed class Encapuzado : Enemy
     {
 
-        public Encapuzado() : base("Encapuzado", 100, 100, 1000) { }
+        public Encapuzado() : base("Encapuzado", 1500, 100, 1000) { }
 
         public override void Attack(Player player, Random random)
         {

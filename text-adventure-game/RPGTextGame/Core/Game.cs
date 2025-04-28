@@ -11,6 +11,7 @@ namespace Core{
         public static Random GlobalRandom = new Random();
         public static bool ProfeciaAtivada = false;
         public static int Turns = 1;
+        public static bool InTheWilds = true;
 
 
         public static void Start() {
@@ -20,6 +21,9 @@ namespace Core{
             Console.Clear();
             ScriptManager.ScriptedIntroScene();
             Encounter.FirstEncounter();
+
+            while (InTheWilds)
+                Encounter.RandomEncounter(GlobalRandom);           
             Console.Clear();
         }
     }

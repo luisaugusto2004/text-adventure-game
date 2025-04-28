@@ -10,8 +10,7 @@ namespace text_adventure_game
     {
         static void Main(string[] args)
         {
-            Game.Start();
-            
+            Game.Start();     
         }
     }
 }
