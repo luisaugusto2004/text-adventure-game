@@ -1,7 +1,6 @@
 ﻿using Core;
 using Enemies;
 using System;
-using text_adventure_game.RPGTextGame.Battle.Enemies;
 
 namespace Battle
 {

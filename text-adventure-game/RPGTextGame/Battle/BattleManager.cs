@@ -46,6 +46,7 @@ namespace Battle
                 }
                 Console.Clear();
             }
+            Game.InCombat = false;
         }
 
         public static void PlayerTurn(Player player, Enemy monster)

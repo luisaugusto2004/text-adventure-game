@@ -1,7 +1,6 @@
 ﻿using EntityPlayer;
 using Core;
 using Battle;
-using text_adventure_game.RPGTextGame.Battle.Enemies;
 using Enemies;
 
 namespace text_adventure_game
