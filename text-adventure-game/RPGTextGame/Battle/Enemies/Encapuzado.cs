@@ -7,7 +7,7 @@ namespace Enemies
     sealed class Encapuzado : Enemy
     {
 
-        public Encapuzado() : base("Encapuzado", 1500, 100, 1000) { }
+        public Encapuzado() : base("Encapuzado", 1500, 100, 1000, 5001) { }
 
         public override void Attack(Player player, Random random)
         {

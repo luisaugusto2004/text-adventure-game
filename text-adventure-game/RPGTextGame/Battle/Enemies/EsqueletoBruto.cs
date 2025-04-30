@@ -10,7 +10,7 @@ namespace Enemies
 {
     class EsqueletoBruto : Enemy
     {
-        public EsqueletoBruto() : base("Esqueleto", 26, 5, 8) { }
+        public EsqueletoBruto() : base("Esqueleto", 26, 5, 8, 21) { }
 
         public override void Attack(Player player, Random random)
         {

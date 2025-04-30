@@ -14,6 +14,7 @@ namespace EntityPlayer
         public int Defense { get; private set; }
         public int BaseDefense { get; private set; }
         public int Potions { get; private set; }
+        public int Coins { get; private set; }
         public int RequiredExperience { get; private set; }
         public int Experience { get; private set; }
         public int Level { get; private set; }
@@ -32,6 +33,7 @@ namespace EntityPlayer
             BaseDefense = 0;
             Potions = 0;
             Defense = 0;
+            Coins = 0;
             RequiredExperience = 50;
             Experience = 0;
             Level = 1;
@@ -92,6 +94,11 @@ namespace EntityPlayer
             Experience += amount;
         }
 
+        public void GainGold(int amount)
+        {
+            Coins += amount;
+        }
+
         public void LevelUp()
         {
             Level++;
@@ -110,9 +117,12 @@ namespace EntityPlayer
 
             if (!monster.IsAlive)
             {
+                int goldAmount = random.Next(4, monster.MaxGold);
                 Console.WriteLine($"{monster.Name} derrotado!");
+                Console.WriteLine($"{monster.Name} dropou {goldAmount} moedas de ouro!");
                 Console.WriteLine($"Você recebeu {monster.ExperienceGain} XP!");
 
+                GainGold(goldAmount);
                 GainExperience(monster.ExperienceGain);
                 VerifyLevelUp();
             }
@@ -145,8 +155,8 @@ namespace EntityPlayer
             sb.AppendLine($"Level: {Level}");
             sb.AppendLine($"Health: {Health}/{MaxHealth}");
             sb.AppendLine($"Strenght: {Strength}");
+            sb.AppendLine($"Gold: {Coins}");
             sb.AppendLine($"Experience: {Experience}/{RequiredExperience}");
-            sb.AppendLine($"Is Alive: {IsAlive}");
             return sb.ToString();
         }
     }

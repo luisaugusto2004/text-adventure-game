@@ -19,6 +19,8 @@ namespace Battle
                 BattleManager.ShowBattleStatus(player, enemy);
                 Console.WriteLine();
                 BattleManager.PlayerTurn(Game.currentPlayer, enemy);
+                if (!Game.InCombat)
+                    break;
                 Console.Clear();
                 if (isScripted)
                 {
@@ -34,6 +36,7 @@ namespace Battle
                 if (!enemy.IsAlive)
                     return;
                 BattleManager.EnemyTurn(Game.currentPlayer, enemy);
+                //Adicionar lógica de jogador morto.
                 if (enemy.Name.ToLower() == "encapuzado" && !Game.currentPlayer.IsAlive)
                 {                    
                     player.Revive();
@@ -46,7 +49,6 @@ namespace Battle
                 }
                 Console.Clear();
             }
-            Game.InCombat = false;
         }
 
         public static void PlayerTurn(Player player, Enemy monster)
@@ -103,7 +105,17 @@ namespace Battle
                     Console.ReadLine();
                     return;
                 }
-                //Run logic
+                Console.Write("Você tenta escapar e...");
+                Console.ReadLine();
+                if (Game.GlobalRandom.Next(2) == 0){
+                    Console.WriteLine("Falha. Você fica aberto para um ataque.");
+                    Console.ReadLine();
+                } else
+                {
+                    Game.InCombat = false;
+                    Console.WriteLine("Consegue! Você escapa e está fora de combate.");
+                    Console.ReadLine();
+                }
             }
             else
             {

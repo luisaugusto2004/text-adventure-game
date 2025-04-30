@@ -69,13 +69,15 @@ namespace Core
             TextPrinter.Print("Insira seu nome: ", 50);
             currentPlayer = new Player(Console.ReadLine(), 30, 10);
             Console.Clear();
-            ScriptManager.ScriptedIntroScene();
-            Encounter.FirstEncounter();
+            //ScriptManager.ScriptedIntroScene();
+            //Encounter.FirstEncounter();
             Console.Clear();
             while (true)
             {
                 while (!InCombat)
                 {
+                    Console.WriteLine(currentPlayer);
+                    Console.WriteLine();
                     Console.Write("Sala atual: ");
                     Console.WriteLine(CurrentRoom.Name);
                     PrintCurrentExits(CurrentRoom);
@@ -101,7 +103,7 @@ namespace Core
                     {
                         InCombat = true;
                         while (InCombat)
-                            Encounter.RandomEncounter(GlobalRandom);
+                            Encounter.RandomEncounter(GlobalRandom);    
                     }
                     Console.Clear();
                 }

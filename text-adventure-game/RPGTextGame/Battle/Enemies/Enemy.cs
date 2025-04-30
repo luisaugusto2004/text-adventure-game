@@ -10,15 +10,17 @@ namespace Enemies
         public int Health { get; private set; }
         public int Strength { get; private set; }
         public int ExperienceGain { get; private set; }
+        public int MaxGold { get; private set; }
         public bool IsAlive { get; private set; }
 
-        public Enemy(string name, int health, int strenght, int experienceGain)
+        public Enemy(string name, int health, int strenght, int experienceGain, int maxGold)
         {
             Name = name;
             MaxHealth = health;
             Health = health;
             Strength = strenght;
             ExperienceGain = experienceGain;
+            MaxGold = maxGold;
             IsAlive = true;
         }
 
