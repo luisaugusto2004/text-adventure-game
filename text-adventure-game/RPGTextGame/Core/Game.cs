@@ -4,6 +4,7 @@ using Scripts;
 using System;
 using Battle;
 using World;
+using Items;
 
 namespace Core
 {
@@ -67,6 +68,8 @@ namespace Core
 
             TextPrinter.Print("Insira seu nome: ", 50);
             currentPlayer = new Player(Console.ReadLine(), 30, 10);
+            currentPlayer.inventory.AddItem(new Weapon("Espada-Curta", 6, "Uma espada velha e meio enferrujada"));
+            currentPlayer.inventory.AddItem(new Weapon("Espada-do-Guts", 999, "A maioral sla nunca vi berserk"));
             Console.Clear();
             //ScriptManager.ScriptedIntroScene();
             //Encounter.FirstEncounter();
@@ -75,7 +78,6 @@ namespace Core
                 while (!InCombat)
                 {
                     Console.Clear();
-                    Console.WriteLine(currentPlayer);
                     Console.Write("Sala atual: ");
                     Console.WriteLine(CurrentRoom.Name);
                     PrintCurrentExits(CurrentRoom);
@@ -83,19 +85,20 @@ namespace Core
                     Console.Write("> ");
                     string[] actionAndParameter = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-                    if (actionAndParameter.Length == 0) {
+                    if (actionAndParameter.Length == 0)
+                    {
                         Console.WriteLine("Digite algum comando");
                         Console.ReadLine();
                         continue;
                     }
-                    
+
                     string command = actionAndParameter[0].ToLower();
                     string? arg = actionAndParameter.Length > 1 ? actionAndParameter[1].ToLower() : null;
 
                     if (command == "deslocar")
                     {
 
-                        if(arg == null)
+                        if (arg == null)
                         {
                             Console.WriteLine("Digite para onde quer ir");
                             Console.ReadLine();
@@ -122,16 +125,24 @@ namespace Core
                     }
                     else if (command == "examinar")
                     {
-                        if(arg == null)
+                        if (arg == null)
                         {
                             Console.WriteLine("Digite o que quer examinar");
                             Console.ReadLine();
                             continue;
                         }
 
+                        string argSemAcento = TextUtils.RemoverAcentos(arg.ToLower());
+                        string nomeArmaSemAcento = TextUtils.RemoverAcentos(currentPlayer.equippedWeapon.Name.ToLower());
+
                         if (arg == "sala")
                         {
                             Console.WriteLine(CurrentRoom.Description);
+                            Console.ReadLine();
+                        }
+                        else if (argSemAcento == nomeArmaSemAcento)
+                        {
+                            Console.WriteLine(currentPlayer.equippedWeapon.Description);
                             Console.ReadLine();
                         }
                         else
@@ -139,6 +150,39 @@ namespace Core
                             Console.WriteLine("Escolha algo válido para examinar");
                             Console.ReadLine();
                         }
+                    }
+                    else if (command == "equipar")
+                    {
+                        string nameWeapon = arg;
+                        Weapon weaponToEquip = null;
+                        if (arg == null)
+                        {
+                            Console.WriteLine("Digite algo para equipar");
+                            Console.ReadLine();
+                            continue;
+                        }
+                        if (currentPlayer.BuscarArmaNoInventario(nameWeapon) != null)
+                        {
+                            weaponToEquip = currentPlayer.BuscarArmaNoInventario(nameWeapon);
+                            currentPlayer.SetWeapon(weaponToEquip);
+                            Console.WriteLine($"Você equipou {weaponToEquip.Name}");
+                            Console.ReadLine();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Você não tem esse item no inventario");
+                            Console.ReadLine();
+                        }
+                    }
+                    else if (command == "status")
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine(currentPlayer);
+                        Console.ReadLine();
+                    }
+                    else if (command == "inventario")
+                    {
+                        currentPlayer.inventory.ListItens();
                     }
                     else
                     {

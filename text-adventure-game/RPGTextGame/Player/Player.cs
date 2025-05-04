@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
 using Enemies;
+using Items;
 using Scripts;
 
 namespace EntityPlayer
@@ -19,6 +20,9 @@ namespace EntityPlayer
         public int Experience { get; private set; }
         public int Level { get; private set; }
         public bool IsAlive { get; private set; }
+        public Inventory inventory { get; private set; }
+        public Weapon equippedWeapon { get; private set; }
+        public static readonly Weapon DefaultWeapon = new Weapon("Mão", 0);
 
         public Player() { }
 
@@ -38,6 +42,8 @@ namespace EntityPlayer
             Experience = 0;
             Level = 1;
             IsAlive = true;
+            inventory = new Inventory();
+            equippedWeapon = DefaultWeapon;
         }
 
         public void ProphecyActivated()
@@ -109,7 +115,7 @@ namespace EntityPlayer
 
         public void Attack(Enemy monster, Random random)
         {
-            int attack = Strength + (random.Next(1, 7));
+            int attack = Strength + equippedWeapon.Damage + (random.Next(1, 7));
 
             Console.WriteLine($"{Name} atacou {monster.Name} e causou {attack} de dano.");
 
@@ -148,6 +154,23 @@ namespace EntityPlayer
             }
         }
 
+        public Weapon BuscarArmaNoInventario(string nome)
+        {
+            foreach (var item in inventory.Itens)
+            {
+                if (item is Weapon weapon && weapon.Name.Equals(nome, StringComparison.OrdinalIgnoreCase))
+                {
+                    return weapon;
+                }
+            }
+            return null;
+        }
+
+        public void SetWeapon(Weapon weapon)
+        {
+            equippedWeapon = weapon;
+        }
+
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
@@ -157,6 +180,7 @@ namespace EntityPlayer
             sb.AppendLine($"Força: {Strength}");
             sb.AppendLine($"Gold: {Coins}");
             sb.AppendLine($"Experiência: {Experience}/{RequiredExperience}");
+            sb.AppendLine($"Arma equipada: {equippedWeapon.Name}");
             return sb.ToString();
         }
     }
