@@ -65,29 +65,44 @@ namespace Core
 
             CurrentRoom = cidade;
 
-            Console.ForegroundColor = ConsoleColor.Green;
             TextPrinter.Print("Insira seu nome: ", 50);
             currentPlayer = new Player(Console.ReadLine(), 30, 10);
             Console.Clear();
             //ScriptManager.ScriptedIntroScene();
             //Encounter.FirstEncounter();
-            Console.Clear();
             while (true)
             {
                 while (!InCombat)
                 {
+                    Console.Clear();
                     Console.WriteLine(currentPlayer);
-                    Console.WriteLine();
                     Console.Write("Sala atual: ");
                     Console.WriteLine(CurrentRoom.Name);
                     PrintCurrentExits(CurrentRoom);
                     Console.WriteLine();
                     Console.Write("> ");
-                    string action = Console.ReadLine();
-                    string[] actionAndParameter = action.Split(' ');
-                    if (actionAndParameter[0].ToLower() == "deslocar")
+                    string[] actionAndParameter = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                    if (actionAndParameter.Length == 0) {
+                        Console.WriteLine("Digite algum comando");
+                        Console.ReadLine();
+                        continue;
+                    }
+                    
+                    string command = actionAndParameter[0].ToLower();
+                    string? arg = actionAndParameter.Length > 1 ? actionAndParameter[1].ToLower() : null;
+
+                    if (command == "deslocar")
                     {
-                        if (CurrentRoom.Exits.TryGetValue(actionAndParameter[1].ToLower(), out Room nextRoom))
+
+                        if(arg == null)
+                        {
+                            Console.WriteLine("Digite para onde quer ir");
+                            Console.ReadLine();
+                            continue;
+                        }
+
+                        if (CurrentRoom.Exits.TryGetValue(arg, out Room nextRoom))
                         {
                             CurrentRoom = nextRoom;
                             Console.WriteLine($"Você se moveu para {CurrentRoom.Name}.");
@@ -95,15 +110,40 @@ namespace Core
                         }
                         else
                         {
-                            Console.WriteLine("Você não pode ir nessa direção.");
+                            Console.WriteLine("Modo de usar: deslocar <saida>");
                             Console.ReadLine();
                         }
                     }
-                    else if (actionAndParameter[0].ToLower() == "lutar" && CurrentRoom.IsHostile)
+                    else if (command == "lutar" && CurrentRoom.IsHostile)
                     {
                         InCombat = true;
                         while (InCombat)
-                            Encounter.RandomEncounter(GlobalRandom);    
+                            Encounter.RandomEncounter(GlobalRandom);
+                    }
+                    else if (command == "examinar")
+                    {
+                        if(arg == null)
+                        {
+                            Console.WriteLine("Digite o que quer examinar");
+                            Console.ReadLine();
+                            continue;
+                        }
+
+                        if (arg == "sala")
+                        {
+                            Console.WriteLine(CurrentRoom.Description);
+                            Console.ReadLine();
+                        }
+                        else
+                        {
+                            Console.WriteLine("Escolha algo válido para examinar");
+                            Console.ReadLine();
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Digite um comando válido.");
+                        Console.ReadLine();
                     }
                     Console.Clear();
                 }

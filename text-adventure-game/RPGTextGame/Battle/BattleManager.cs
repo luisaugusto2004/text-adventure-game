@@ -65,6 +65,7 @@ namespace Battle
             if (string.IsNullOrWhiteSpace(input))
             {
                 Console.WriteLine("Você hesita... e o tempo parece parar por um instante.");
+                Console.ReadLine();
                 return;
             }
 

@@ -151,12 +151,12 @@ namespace EntityPlayer
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine($"Name: {Name}");
-            sb.AppendLine($"Level: {Level}");
-            sb.AppendLine($"Health: {Health}/{MaxHealth}");
-            sb.AppendLine($"Strenght: {Strength}");
+            sb.AppendLine($"Nome: {Name}");
+            sb.AppendLine($"Nível: {Level}");
+            sb.AppendLine($"Vida: {Health}/{MaxHealth}");
+            sb.AppendLine($"Força: {Strength}");
             sb.AppendLine($"Gold: {Coins}");
-            sb.AppendLine($"Experience: {Experience}/{RequiredExperience}");
+            sb.AppendLine($"Experiência: {Experience}/{RequiredExperience}");
             return sb.ToString();
         }
     }
