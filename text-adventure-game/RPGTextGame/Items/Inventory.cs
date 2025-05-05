@@ -1,6 +1,6 @@
 ﻿namespace Items
 {
-    class Inventory
+    public class Inventory
     {
         public List<Item> Itens { get; private set; }
 
@@ -28,7 +28,7 @@
 
             if (Itens.Count == 0)
             {
-                Console.WriteLine("║"+ CenterText(title, boxWidth)+"║");
+                Console.WriteLine("║"+ CenterText("(vazio)", boxWidth)+"║");
             }
             else
             {
