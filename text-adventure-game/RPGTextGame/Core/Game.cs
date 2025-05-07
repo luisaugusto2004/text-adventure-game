@@ -14,7 +14,7 @@ namespace Core
         public static Player currentPlayer = new Player();
         public static Random GlobalRandom = new Random();
 
-        public static void Start()
+        public void Start()
         {
             Room cemiterio = new Room(
                 "Cemitério",
@@ -56,17 +56,20 @@ namespace Core
             cemiterio.SetExits(cemeteryExits);
             cidade.SetExits(cityExits);
             saloon.SetExits(saloonExits);
-            loja.SetExits(storeExits);
+            loja.SetExits(storeExits);            
 
             TextPrinter.Print("Insira seu nome: ", 50);
             currentPlayer = new Player(Console.ReadLine(), 30, 10);
+
             Console.Clear();
-            //ScriptManager.ScriptedIntroScene();
-            //Encounter.FirstEncounter();           
+
+            ScriptManager.ScriptedIntroScene();
+            Encounter.FirstEncounter();
+
             currentPlayer.SetRoom(cidade);
             while (true)
             {
-                while (!Encounter.GetInCombat())
+                while (!BattleManager.GetInCombat())
                 {
                     Console.Clear();
                     Console.Write("Sala atual: ");
@@ -82,7 +85,7 @@ namespace Core
             }
         }
 
-        private static void PrintCurrentExits(Room room)
+        private void PrintCurrentExits(Room room)
         {
             Console.WriteLine("Saidas atuais: ");
             Console.WriteLine();

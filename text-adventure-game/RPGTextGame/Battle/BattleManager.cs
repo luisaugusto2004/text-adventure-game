@@ -5,34 +5,47 @@ using Util;
 using Core;
 using Scripts;
 using System.Threading;
+using System.Numerics;
 
 namespace Battle
 {
     class BattleManager
     {
         private static int turns = 1;
+        private static bool inCombat = false;
 
         public static void StartFight(Player player, Enemy enemy, bool isScripted = false)
         {
             turns = 1;
-            while (player.IsAlive && enemy.IsAlive)
+            SetInCombat(true);
+            while (player.IsAlive && enemy.IsAlive && GetInCombat())
             {
-                BattleManager.ShowBattleStatus(player, enemy);
+                ShowBattleStatus(player, enemy);
                 Console.WriteLine();
-                BattleManager.PlayerTurn(player, enemy);
-                if (!Encounter.GetInCombat())
+                PlayerTurn(player, enemy);
+                if (!GetInCombat())
                     break;
                 if (CheckSecretEnding(enemy)) return;
                 Console.Clear();
                 ShowBattleStatus(player, enemy);
                 Console.WriteLine();
-                if (!enemy.IsAlive)
-                    return;
-                BattleManager.EnemyTurn(player, enemy);
+                if (!enemy.IsAlive)                
+                    return;            
+                EnemyTurn(player, enemy);
                 if (HandlePlayerDefeatedByEncapuzado(player, enemy)) return;
                 // TODO: Implementar lógica quando o jogador morrer em encontros aleatórios.
                 Console.Clear();
             }
+        }
+
+        public static bool GetInCombat()
+        {
+            return inCombat;
+        }
+
+        public static void SetInCombat(bool _inCombat)
+        {
+            inCombat = _inCombat;
         }
 
         public static void PlayerTurn(Player player, Enemy monster)
@@ -100,7 +113,7 @@ namespace Battle
                 }
                 else
                 {
-                    Encounter.SetInCombat(false);
+                    SetInCombat(false);
                     Console.WriteLine("Consegue! Você escapa e está fora de combate.");
                     Console.ReadLine();
                 }
@@ -114,32 +127,8 @@ namespace Battle
 
         public static void EnemyTurn(Player player, Enemy monster)
         {
-            if (monster.Name.ToLower() == "encapuzado" && !player.ProfeciaAtivada && turns <= 3)
-            {
-                switch (turns)
-                {
-                    case 1:
-                        TextPrinter.Print("O encapuzado observa você em silêncio. Seus olhos brilham sob a sombra do capuz.", 30);
-                        turns++;
-                        Console.ReadLine();
-                        return;
-                    case 2:
-                        TextPrinter.Print("“Por um segundo, você vê algo atrás dele. Sua própria silhueta... caída no chão.”", 30);
-                        turns++;
-                        Console.ReadLine();
-                        return;
-                    case 3:
-                        TextPrinter.Print("“Sua mente treme. Uma voz surge diretamente em seus pensamentos: ‘Você acha que pode mudar o destino?’”", 30);
-                        turns++;
-                        Console.ReadLine();
-                        return;
-                    default:
-                        TextPrinter.Print("O encapuzado permanece imóvel, mas você sente que ele está apenas aguardando seu fim.", 30);
-                        Console.ReadLine();
-                        return;
-                }
-            }
 
+            if (EncapuzadoFirstTurns(player, monster)) return;
             turns++;
             monster.Attack(player, Game.GlobalRandom);
             Console.ReadLine();
@@ -157,6 +146,32 @@ namespace Battle
             }
             Console.WriteLine($"{monster.Name}: {monster.Health}/{monster.MaxHealth} HP");
             Console.WriteLine($"Turno: {turns}");
+        }
+
+        public static bool EncapuzadoFirstTurns(Player player, Enemy monster)
+        {
+            if (monster.Name.ToLower() == "encapuzado" && !player.ProfeciaAtivada && turns <= 4)
+            {
+                switch (turns)
+                {
+                    case 1:
+                        TextPrinter.Print("O encapuzado observa você em silêncio. Seus olhos brilham sob a sombra do capuz.", 30);                        
+                        Console.ReadLine();
+                        turns++;
+                        return true;
+                    case 2:
+                        TextPrinter.Print("“Por um segundo, você vê algo atrás dele. Sua própria silhueta... caída no chão.”", 30);
+                        Console.ReadLine();
+                        turns++;
+                        return true;
+                    case 3:
+                        TextPrinter.Print("“Sua mente treme. Uma voz surge diretamente em seus pensamentos: ‘Você acha que pode mudar o destino?’”", 30);
+                        Console.ReadLine();
+                        turns++;
+                        return true;
+                }
+            }
+            return false;
         }
 
         public static bool CheckSecretEnding(Enemy enemy)

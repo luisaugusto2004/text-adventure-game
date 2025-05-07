@@ -1,13 +1,13 @@
 ﻿using Core;
 using Enemies;
+using EntityPlayer;
 using System;
+using System.Diagnostics.Metrics;
 
 namespace Battle
 {
     class Encounter
     {
-        private static bool inCombat = false;
-
         public static void FirstEncounter()
         {
             Console.WriteLine("Você leva a mão ao que sobrou da sua arma, mesmo sabendo que não faz diferença.");
@@ -17,40 +17,51 @@ namespace Battle
             Console.ReadLine();
             Console.Clear();
             Enemy enemy = new Encapuzado();
-            SetInCombat(true);
+            BattleManager.SetInCombat(true);
             BattleManager.StartFight(Game.currentPlayer, enemy, true);
-            SetInCombat(false);
+            BattleManager.SetInCombat(false);
         }
 
-        public static void RandomEncounter(Random random)
+        public static void RandomEncounter(Player player)
         {
-            if(random.Next(1,3) == 1 || random.Next(1,3) == 2)
+            if (player.CurrentRoom.IsHostile)
             {
                 Console.Clear();
-                Console.WriteLine("A wild Zombie appears!");
-                Console.ReadLine();
-                Console.Clear();
-                Enemy monster = new BustoDeZumbi();
-                BattleManager.StartFight(Game.currentPlayer, monster);
-            } else if(random.Next(3,4) == 3)
+                var enemy = GenerateEnemy(Game.GlobalRandom);
+                
+                BattleManager.StartFight(player, enemy);
+            }
+            else
             {
-                Console.Clear();
-                Console.WriteLine("A wild Skeleton appears!");
+                Console.WriteLine("Não há com o que lutar aqui.");
                 Console.ReadLine();
-                Console.Clear();
-                Enemy monster = new EsqueletoBruto();
-                BattleManager.StartFight(Game.currentPlayer, monster);
             }
         }
 
-        public static bool GetInCombat()
+        public static Enemy GenerateEnemy(Random random)
         {
-            return inCombat;
+            int roll = random.Next(1, 4);
+            switch (roll)
+            {
+                case 1:
+                    ShowEncounter("A wild Zombie appears!");
+                    return new BustoDeZumbi();
+                case 2:
+                    ShowEncounter("A wild Zombie appears!");
+                    return new BustoDeZumbi();
+                case 3:
+                    ShowEncounter("A wild Skeleton appears!");
+                    return new EsqueletoBruto();
+                default:
+                    return new BustoDeZumbi();
+            }
         }
-
-        public static void SetInCombat(bool _inCombat)
+        private static void ShowEncounter(string message)
         {
-            inCombat = _inCombat;
+            Console.Clear();
+            Console.WriteLine(message);
+            Console.ReadLine();
+            Console.Clear();
         }
     }
 }

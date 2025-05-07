@@ -10,6 +10,7 @@ namespace text_adventure_game.Test
         [Fact]
         public void Deslocar_ParaSalaExistente_SalaAtualMuda()
         {
+            //Arrange
             Player player = new Player("teste", 30 , 10);
             Room room1 = new Room("room1", "teste1");
             Room room2 = new Room("room2", "teste2");
@@ -25,17 +26,19 @@ namespace text_adventure_game.Test
             room2.SetExits(room2Exits);
             player.SetRoom(room1);
 
+            //Act
             string[] input = { "deslocar", "room2"};
-
             CommandHandler handler = new CommandHandler(player);
             handler.Handle(input);
 
+            //Assert
             Assert.Equal(room2, player.CurrentRoom);
         }
 
         [Fact]
         public void Deslocar_ParaSalaInexistente_SalaAtualNaoMuda()
         {
+            //Arrange
             Player player = new Player("teste", 30, 10);
             Room room1 = new Room("room1", "teste1");
             Room room2 = new Room("room2", "teste2");
@@ -51,11 +54,12 @@ namespace text_adventure_game.Test
             room2.SetExits(room2Exits);
             player.SetRoom(room1);
 
+            //Act
             string[] input = { "deslocar", "room3" };
-
             CommandHandler handler = new CommandHandler(player);
             handler.Handle(input);
-
+            
+            //Assert
             Assert.Equal(room1, player.CurrentRoom);
         }
     }

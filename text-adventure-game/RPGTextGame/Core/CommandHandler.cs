@@ -124,9 +124,9 @@ namespace Core
         {
             if (player.CurrentRoom.IsHostile)
             {
-                Encounter.SetInCombat(true);
-                while (Encounter.GetInCombat())
-                    Encounter.RandomEncounter(Game.GlobalRandom);
+                BattleManager.SetInCombat(true);
+                while (BattleManager.GetInCombat())
+                    Encounter.RandomEncounter(player);                    
             }
             else
             {
