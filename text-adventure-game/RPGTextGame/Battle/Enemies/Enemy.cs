@@ -3,7 +3,7 @@ using System;
 
 namespace Enemies
 {
-    public abstract class Enemy
+    abstract class Enemy
     {
         public string Name { get; private set; }
         public int MaxHealth { get; private set; }

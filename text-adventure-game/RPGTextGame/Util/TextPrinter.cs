@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Util
 {
-    public static class TextPrinter
+    static class TextPrinter
     {
         public static void Print(string text, int speed)
         {

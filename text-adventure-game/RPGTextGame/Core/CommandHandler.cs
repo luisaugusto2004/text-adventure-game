@@ -2,13 +2,14 @@
 using EntityPlayer;
 using Items;
 using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Util;
 using World;
-
+[assembly: InternalsVisibleTo("text-adventure-game.Test")]
 namespace Core
 {
-    public class CommandHandler
+    class CommandHandler
     {
         private readonly Player player;
 
@@ -44,11 +45,7 @@ namespace Core
                     Deslocar(arg);
                     break;
                 case "lutar":
-                    if(Game.CurrentRoom.IsHostile)
-                        Lutar();
-                    else
-                        Console.WriteLine("Não há com o que lutar aqui.");
-                    Console.ReadLine();
+                    Lutar();
                     break;
                 case "examinar":
                     Examinar(arg);
@@ -108,7 +105,7 @@ namespace Core
 
             if (arg == "sala")
             {
-                Console.WriteLine(Game.CurrentRoom.Description);
+                Console.WriteLine(player.CurrentRoom.Description);
                 Console.ReadLine();
             }
             else if (argSemAcento == nomeArmaSemAcento)
@@ -125,9 +122,17 @@ namespace Core
 
         private void Lutar()
         {
-            Game.InCombat = true;
-            while (Game.InCombat)
-                Encounter.RandomEncounter(Game.GlobalRandom);
+            if (player.CurrentRoom.IsHostile)
+            {
+                Encounter.SetInCombat(true);
+                while (Encounter.GetInCombat())
+                    Encounter.RandomEncounter(Game.GlobalRandom);
+            }
+            else
+            {
+                Console.WriteLine("Não há com o que lutar aqui.");
+                Console.ReadLine();
+            }
         }
 
         private void Deslocar(string? arg)
@@ -139,10 +144,10 @@ namespace Core
                 return;
             }
 
-            if (Game.CurrentRoom.Exits.TryGetValue(arg, out Room nextRoom))
+            if (player.CurrentRoom.Exits.TryGetValue(arg, out Room nextRoom))
             {
-                Game.CurrentRoom = nextRoom;
-                Console.WriteLine($"Você se moveu para {Game.CurrentRoom.Name}.");
+                player.SetRoom(nextRoom);
+                Console.WriteLine($"Você se moveu para {player.CurrentRoom.Name}.");
                 Console.ReadLine();
             }
             else

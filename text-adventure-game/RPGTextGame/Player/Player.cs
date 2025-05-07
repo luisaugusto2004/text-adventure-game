@@ -3,10 +3,10 @@ using System.Text;
 using Enemies;
 using Items;
 using Scripts;
-
+using World;
 namespace EntityPlayer
 {
-    public class Player
+    class Player
     {
         public string Name { get; private set; } = string.Empty;
         public int MaxHealth { get; private set; }
@@ -20,6 +20,8 @@ namespace EntityPlayer
         public int Experience { get; private set; }
         public int Level { get; private set; }
         public bool IsAlive { get; private set; }
+        public Room CurrentRoom { get; private set; }
+        public bool ProfeciaAtivada { get; private set; } = false;
         public Inventory inventory { get; private set; }
         public Weapon equippedWeapon { get; private set; }
         public static readonly Weapon DefaultWeapon = new Weapon("Mão", 0);
@@ -48,6 +50,7 @@ namespace EntityPlayer
 
         public void ProphecyActivated()
         {
+            ProfeciaAtivada = true;
             MaxHealth += 999;
             Health = MaxHealth;
             Strength += 999;
@@ -103,6 +106,11 @@ namespace EntityPlayer
         public void GainGold(int amount)
         {
             Coins += amount;
+        }
+
+        public void SetRoom(Room room)
+        {
+            CurrentRoom = room;
         }
 
         public void LevelUp()

@@ -6,6 +6,8 @@ namespace Battle
 {
     class Encounter
     {
+        private static bool inCombat = false;
+
         public static void FirstEncounter()
         {
             Console.WriteLine("Você leva a mão ao que sobrou da sua arma, mesmo sabendo que não faz diferença.");
@@ -15,7 +17,9 @@ namespace Battle
             Console.ReadLine();
             Console.Clear();
             Enemy enemy = new Encapuzado();
+            SetInCombat(true);
             BattleManager.StartFight(Game.currentPlayer, enemy, true);
+            SetInCombat(false);
         }
 
         public static void RandomEncounter(Random random)
@@ -37,6 +41,16 @@ namespace Battle
                 Enemy monster = new EsqueletoBruto();
                 BattleManager.StartFight(Game.currentPlayer, monster);
             }
+        }
+
+        public static bool GetInCombat()
+        {
+            return inCombat;
+        }
+
+        public static void SetInCombat(bool _inCombat)
+        {
+            inCombat = _inCombat;
         }
     }
 }

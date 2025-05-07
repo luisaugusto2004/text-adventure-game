@@ -10,43 +10,27 @@ namespace Battle
 {
     class BattleManager
     {
+        private static int turns = 1;
 
         public static void StartFight(Player player, Enemy enemy, bool isScripted = false)
         {
-            Game.Turns = 1;
-            while (Game.currentPlayer.IsAlive && enemy.IsAlive)
+            turns = 1;
+            while (player.IsAlive && enemy.IsAlive)
             {
                 BattleManager.ShowBattleStatus(player, enemy);
                 Console.WriteLine();
-                BattleManager.PlayerTurn(Game.currentPlayer, enemy);
-                if (!Game.InCombat)
+                BattleManager.PlayerTurn(player, enemy);
+                if (!Encounter.GetInCombat())
                     break;
+                if (CheckSecretEnding(enemy)) return;
                 Console.Clear();
-                if (isScripted)
-                {
-                    if (enemy.Name.ToLower() == "encapuzado" && !enemy.IsAlive)
-                    {
-                        ScriptManager.HandleSecretEndingWhenDefeated();
-                        Console.ReadLine();
-                        Environment.Exit(0);
-                    }
-                }
                 ShowBattleStatus(player, enemy);
                 Console.WriteLine();
                 if (!enemy.IsAlive)
                     return;
-                BattleManager.EnemyTurn(Game.currentPlayer, enemy);
-                //Adicionar lógica de jogador morto.
-                if (enemy.Name.ToLower() == "encapuzado" && !Game.currentPlayer.IsAlive)
-                {                    
-                    player.Revive();
-                    Console.Clear();
-                    TextPrinter.Print("Você não tem nome aqui, Pereça.", 70);
-                    Console.ReadLine();
-                    Console.Clear();
-                    ScriptManager.ScriptedScenePostBattle();
-                    return;
-                }
+                BattleManager.EnemyTurn(player, enemy);
+                if (HandlePlayerDefeatedByEncapuzado(player, enemy)) return;
+                // TODO: Implementar lógica quando o jogador morrer em encontros aleatórios.
                 Console.Clear();
             }
         }
@@ -69,17 +53,16 @@ namespace Battle
                 return;
             }
 
-            if (input == "viver" && monster.Name.ToLower() == "encapuzado" && !Game.ProfeciaAtivada)
+            if (input == "viver" && monster.Name.ToLower() == "encapuzado" && !player.ProfeciaAtivada)
             {
-                Game.ProfeciaAtivada = true;
                 player.ProphecyActivated();
                 ScriptManager.HandleSecretEnding();
 
             }
             else if (input == "a")
             {
-                player.Attack(monster, Game.GlobalRandom);   
-                if(monster.Name.ToLower() == "encapuzado" && !monster.IsAlive)
+                player.Attack(monster, Game.GlobalRandom);
+                if (monster.Name.ToLower() == "encapuzado" && !monster.IsAlive)
                 {
                     Console.Clear();
                     return;
@@ -108,42 +91,46 @@ namespace Battle
                 }
                 Console.Write("Você tenta escapar e...");
                 Console.ReadLine();
-                if (Game.GlobalRandom.Next(2) == 0){
+                // Tenta fugir da batalha com 50% de chance de sucesso.
+                // Futuramente, considerar usar um atributo de agilidade para influenciar essa chance.
+                if (Game.GlobalRandom.Next(2) == 0)
+                {
                     Console.WriteLine("Falha. Você fica aberto para um ataque.");
                     Console.ReadLine();
-                } else
+                }
+                else
                 {
-                    Game.InCombat = false;
+                    Encounter.SetInCombat(false);
                     Console.WriteLine("Consegue! Você escapa e está fora de combate.");
                     Console.ReadLine();
                 }
             }
             else
             {
-                Console.WriteLine("Digite uma ação válida.");
+                Console.WriteLine("Você pensa no que quer fazer mas hesita, nem mesmo você sabe o que quer fazer.");
                 Console.ReadLine();
             }
         }
 
         public static void EnemyTurn(Player player, Enemy monster)
         {
-            if (monster.Name.ToLower() == "encapuzado" && !Game.ProfeciaAtivada && Game.Turns <= 3)
+            if (monster.Name.ToLower() == "encapuzado" && !player.ProfeciaAtivada && turns <= 3)
             {
-                switch (Game.Turns)
+                switch (turns)
                 {
                     case 1:
                         TextPrinter.Print("O encapuzado observa você em silêncio. Seus olhos brilham sob a sombra do capuz.", 30);
-                        Game.Turns++;
+                        turns++;
                         Console.ReadLine();
                         return;
                     case 2:
                         TextPrinter.Print("“Por um segundo, você vê algo atrás dele. Sua própria silhueta... caída no chão.”", 30);
-                        Game.Turns++;
+                        turns++;
                         Console.ReadLine();
                         return;
                     case 3:
                         TextPrinter.Print("“Sua mente treme. Uma voz surge diretamente em seus pensamentos: ‘Você acha que pode mudar o destino?’”", 30);
-                        Game.Turns++;
+                        turns++;
                         Console.ReadLine();
                         return;
                     default:
@@ -153,7 +140,7 @@ namespace Battle
                 }
             }
 
-            Game.Turns++;
+            turns++;
             monster.Attack(player, Game.GlobalRandom);
             Console.ReadLine();
         }
@@ -165,11 +152,39 @@ namespace Battle
             if (monster.Name.ToLower() == "encapuzado")
             {
                 Console.WriteLine("Encapuzado: ??/??");
-                Console.WriteLine($"Turno: {Game.Turns}");
+                Console.WriteLine($"Turno: {turns}");
                 return;
             }
             Console.WriteLine($"{monster.Name}: {monster.Health}/{monster.MaxHealth} HP");
-            Console.WriteLine($"Turno: {Game.Turns}");
+            Console.WriteLine($"Turno: {turns}");
+        }
+
+        public static bool CheckSecretEnding(Enemy enemy)
+        {
+            if (enemy.Name.ToLower() == "encapuzado" && !enemy.IsAlive)
+            {
+                Console.Clear();
+                ScriptManager.HandleSecretEndingWhenDefeated();
+                Console.ReadLine();
+                Environment.Exit(0);
+                return true;
+            }
+            return false;
+        }
+
+        public static bool HandlePlayerDefeatedByEncapuzado(Player player, Enemy enemy)
+        {
+            if (enemy.Name.ToLower() == "encapuzado" && !player.IsAlive)
+            {
+                player.Revive();
+                Console.Clear();
+                TextPrinter.Print("Você não tem nome aqui, Pereça.", 70);
+                Console.ReadLine();
+                Console.Clear();
+                ScriptManager.ScriptedScenePostBattle();
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Items
 {
-    public class Inventory
+    class Inventory
     {
         public List<Item> Itens { get; private set; }
 

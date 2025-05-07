@@ -13,12 +13,6 @@ namespace Core
 
         public static Player currentPlayer = new Player();
         public static Random GlobalRandom = new Random();
-        public static Room CurrentRoom;
-        public static bool ProfeciaAtivada = false;
-        public static int Turns = 1;
-        public static bool InCombat = false;
-
-
 
         public static void Start()
         {
@@ -64,23 +58,20 @@ namespace Core
             saloon.SetExits(saloonExits);
             loja.SetExits(storeExits);
 
-            CurrentRoom = cidade;
-
             TextPrinter.Print("Insira seu nome: ", 50);
             currentPlayer = new Player(Console.ReadLine(), 30, 10);
             Console.Clear();
-            ScriptManager.ScriptedIntroScene();
-            InCombat = true;
-            Encounter.FirstEncounter();
-            InCombat = false;
+            //ScriptManager.ScriptedIntroScene();
+            //Encounter.FirstEncounter();           
+            currentPlayer.SetRoom(cidade);
             while (true)
             {
-                while (!InCombat)
+                while (!Encounter.GetInCombat())
                 {
                     Console.Clear();
                     Console.Write("Sala atual: ");
-                    Console.WriteLine(CurrentRoom.Name);
-                    PrintCurrentExits(CurrentRoom);
+                    Console.WriteLine(currentPlayer.CurrentRoom.Name);
+                    PrintCurrentExits(currentPlayer.CurrentRoom);
                     Console.WriteLine();
                     Console.Write("> ");
                     string[] input = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);

@@ -1,6 +1,6 @@
 ﻿namespace Items
 {
-    public sealed class Weapon : Item
+    sealed class Weapon : Item
     {
         public int Damage { get; private set; }
 
