@@ -2,7 +2,7 @@
 
 namespace Items
 {
-    sealed class Weapon : Item
+    sealed class Weapon : Item, IEquippable
     {
         public int Rolls { get; set; }
         public int Face { get; set; }
