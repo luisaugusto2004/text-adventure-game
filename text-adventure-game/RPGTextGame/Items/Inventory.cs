@@ -1,4 +1,6 @@
-﻿namespace Items
+﻿using EntityPlayer;
+
+namespace Items
 {
     class Inventory
     {
@@ -14,8 +16,9 @@
             Itens.Add(item);
         }
 
-        public void ListItens()
+        public void ListItens(Player player)
         {
+            List<Item> sortedItems = Itens.OrderBy(i => i.Name).ToList();
             const int boxWidth = 40;
             string topBorder = "╔" + new string('═', boxWidth) + "╗";
             string title = "Mochila";
@@ -28,15 +31,20 @@
 
             if (Itens.Count == 0)
             {
-                Console.WriteLine("║"+ CenterText("(vazio)", boxWidth)+"║");
+                Console.WriteLine("║" + CenterText("(vazio)", boxWidth) + "║");
             }
             else
             {
-                foreach (Item item in Itens)
+                foreach (Item item in sortedItems)
                 {
                     string itemText = item is Weapon weapon
-                ? $"{item.Name} (+{weapon.Damage})"
+                ? $"{weapon.Name} (+{weapon.Rolls}d{weapon.Face})"
                 : item.Name;
+                    if(player.equippedWeapon.Name == item.Name)
+                    {
+                        Console.WriteLine("║" + CenterText("(E) "+itemText, boxWidth) + "║");
+                        continue;
+                    }
 
                     Console.WriteLine("║" + CenterText(itemText, boxWidth) + "║");
                 }

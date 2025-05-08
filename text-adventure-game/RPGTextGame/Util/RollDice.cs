@@ -5,7 +5,7 @@ namespace Util
 {
     class RollDice
     {
-        public static int Roll(int faces, int rolls)
+        public static int Roll(int rolls, int faces)
         {
             List<int> values = new List<int>(); 
             for (int i = 0; i < rolls; i++)

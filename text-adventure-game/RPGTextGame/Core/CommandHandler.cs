@@ -58,7 +58,7 @@ namespace Core
                     Console.ReadLine();
                     break;
                 case "inventario":
-                    player.inventory.ListItens();
+                    player.inventory.ListItens(player);
                     break;
                 default:
                     Console.WriteLine("Digite um comando válido");
@@ -69,7 +69,7 @@ namespace Core
 
         private void Equipar(string? arg)
         {
-            string nameWeapon = arg;
+            var nameWeapon = TextUtils.RemoverAcentos(arg);
             Weapon weaponToEquip = null;
             if (arg == null)
             {

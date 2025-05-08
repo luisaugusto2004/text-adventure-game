@@ -4,6 +4,7 @@ using Enemies;
 using Items;
 using Scripts;
 using World;
+using Util;
 namespace EntityPlayer
 {
     class Player
@@ -24,7 +25,7 @@ namespace EntityPlayer
         public bool ProfeciaAtivada { get; private set; } = false;
         public Inventory inventory { get; private set; }
         public Weapon equippedWeapon { get; private set; }
-        public static readonly Weapon DefaultWeapon = new Weapon("Mão", 0);
+        public static readonly Weapon DefaultWeapon = new Weapon("Mão", 0, 0);
 
         public Player() { }
 
@@ -123,7 +124,7 @@ namespace EntityPlayer
 
         public void Attack(Enemy monster, Random random)
         {
-            int attack = Strength + equippedWeapon.Damage + (random.Next(1, 7));
+            int attack = Strength + equippedWeapon.RollDamage();
 
             Console.WriteLine($"{Name} atacou {monster.Name} e causou {attack} de dano.");
 
@@ -166,7 +167,8 @@ namespace EntityPlayer
         {
             foreach (var item in inventory.Itens)
             {
-                if (item is Weapon weapon && weapon.Name.Equals(nome, StringComparison.OrdinalIgnoreCase))
+
+                if (item is Weapon weapon && TextUtils.RemoverAcentos(weapon.Name).Equals(nome, StringComparison.OrdinalIgnoreCase))
                 {
                     return weapon;
                 }
@@ -188,7 +190,8 @@ namespace EntityPlayer
             sb.AppendLine($"Força: {Strength}");
             sb.AppendLine($"Gold: {Coins}");
             sb.AppendLine($"Experiência: {Experience}/{RequiredExperience}");
-            sb.AppendLine($"Arma equipada: {equippedWeapon.Name}");
+            string equipped = equippedWeapon == DefaultWeapon ? equippedWeapon.Name + " (+0)" : $"{equippedWeapon.Name} (+{equippedWeapon.Rolls}d{equippedWeapon.Face})";
+            sb.AppendLine($"Arma equipada: {equipped}");
             return sb.ToString();
         }
     }
