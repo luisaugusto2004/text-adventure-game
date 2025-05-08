@@ -25,7 +25,7 @@ namespace EntityPlayer
         public Inventory inventory { get; private set; }
         public Weapon EquippedWeapon { get; private set; }
         public Armor EquippedArmor { get; private set; }
-        public static readonly Weapon DefaultWeapon = new Weapon("Mão", 0, 0);
+        public static readonly Weapon DefaultWeapon = new Weapon("Mão", 1, 3);
         public static readonly Armor DefaultArmor = new Armor("Sobretudo batido", "Um sobretudo que você usa desde que se conhece por gente, nunca perde sua beleza", 0);
 
         public Player() { }
@@ -148,10 +148,10 @@ namespace EntityPlayer
 
         public void Defend()
         {
-            Defense = BaseDefense + 5;
+            Defense = BaseDefense + EquippedArmor.DefenseAmount + 5;
         }
 
-        public void SetBaseDefense()
+        public void SetDefense()
         {
             Defense = BaseDefense + EquippedArmor.DefenseAmount;
         }
@@ -222,6 +222,7 @@ namespace EntityPlayer
         public void SetArmor(Armor armor)
         {
             EquippedArmor = armor;
+            SetDefense();
             Console.WriteLine($"Você equipou a armadura: {armor.Name}");
         }
 
@@ -234,7 +235,6 @@ namespace EntityPlayer
             else if (item is Armor armor)
             {
                 SetArmor(armor);
-                SetBaseDefense();
             }
         }
 
@@ -244,7 +244,7 @@ namespace EntityPlayer
             sb.AppendLine($"Nome: {Name}");
             sb.AppendLine($"Nível: {Level}");
             sb.AppendLine($"Vida: {Health}/{MaxHealth}");
-            sb.AppendLine($"Defesa base: {EquippedArmor.DefenseAmount}");
+            sb.AppendLine($"Defesa: {Defense}");
             sb.AppendLine($"Força: {Strength}");
             sb.AppendLine($"Gold: {Coins}");
             sb.AppendLine($"Experiência: {Experience}/{RequiredExperience}");

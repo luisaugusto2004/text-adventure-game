@@ -80,7 +80,7 @@ namespace Core
             currentPlayer.inventory.AddItem(armor1);
             currentPlayer.inventory.AddItem(armor2);
 
-            currentPlayer.SetRoom(cidade);
+            currentPlayer.SetRoom(cemiterio);
             while (true)
             {
                 while (!BattleManager.GetInCombat())

@@ -50,7 +50,7 @@ namespace Battle
 
         public static void PlayerTurn(Player player, Enemy monster)
         {
-            player.SetBaseDefense();
+            player.SetDefense();
 
             Console.WriteLine("=============================");
             Console.WriteLine("| [a] Atacar | [d] Defender |");

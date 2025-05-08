@@ -10,12 +10,20 @@ namespace Enemies
 {
     class EsqueletoBruto : Enemy
     {
-        public EsqueletoBruto() : base("Esqueleto", 26, 5, 8, 21) { }
+        public EsqueletoBruto() : base("Esqueleto", 26, 5, 1, 6, 8, 21) { }
 
         public override void Attack(Player player, Random random)
         {
-            int damage = Strength + random.Next(1, 7);
-            Console.Write($"O Esqueleto avança com seu machado e causa {damage} de dano");
+            int damage = Strength + RollDamage() - player.Defense;
+            damage = Math.Max(0, damage);
+            if (damage > 0)
+            {
+                Console.WriteLine($"O Esqueleto avança com seu machado e causa {damage} de dano!");
+            }
+            else
+            {
+                Console.WriteLine("O Esqueleto ataca, mas o machado nem atravessa sua armadura!");
+            }
             player.TakeDamage(damage);
         }
     }
