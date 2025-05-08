@@ -103,13 +103,11 @@ namespace Core
                 return;
             }
 
-            var nameWeapon = TextUtils.RemoverAcentos(arg);
-            Weapon weaponToEquip = player.BuscarArmaNoInventario(nameWeapon);
-
-            if (weaponToEquip != null)
+            var nameItem = TextUtils.RemoverAcentos(arg);
+            var itemToEquip = player.BuscarItemEquipavelNoInventario(nameItem);
+            if (itemToEquip != null)
             {
-                player.SetWeapon(weaponToEquip);
-                Console.WriteLine($"Você equipou {weaponToEquip.Name}");
+                player.EquiparItem(itemToEquip);
             }
             else
             {
@@ -128,7 +126,7 @@ namespace Core
             }
 
             string argSemAcento = TextUtils.RemoverAcentos(arg.ToLower());
-            string nomeArmaSemAcento = TextUtils.RemoverAcentos(player.equippedWeapon.Name.ToLower());
+            string nomeArmaSemAcento = TextUtils.RemoverAcentos(player.EquippedWeapon.Name.ToLower());
 
             if (arg == "sala")
             {
@@ -136,7 +134,7 @@ namespace Core
             }
             else if (argSemAcento == nomeArmaSemAcento)
             {
-                Console.WriteLine(player.equippedWeapon.Description);
+                Console.WriteLine(player.EquippedWeapon.Description);
             }
             else
             {

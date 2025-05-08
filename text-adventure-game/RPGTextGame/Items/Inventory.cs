@@ -48,16 +48,26 @@ namespace Items
             {
                 foreach (Item item in sortedItems)
                 {
-                    string itemText = item is Weapon weapon
-                ? $"{weapon.Name} (+{weapon.Rolls}d{weapon.Face})"
-                : item.Name;
-                    if(player.equippedWeapon.Name == item.Name)
-                    {
-                        Console.WriteLine("║" + CenterText("(E) "+itemText, boxWidth) + "║");
-                        continue;
-                    }
+                    string displayText = item.Name;
 
-                    Console.WriteLine("║" + CenterText(itemText, boxWidth) + "║");
+                    if (item is Weapon weapon)
+                    {
+                        displayText = $"{weapon.Name} (+{weapon.Rolls}d{weapon.Face} dano)";
+                        if (player.EquippedWeapon?.Name == weapon.Name)
+                            displayText = "(E) " + displayText;
+                    }
+                    else if (item is Armor armor)
+                    {
+                        displayText = $"{armor.Name} (+{armor.DefenseAmount} def)";
+                        if (player.EquippedArmor?.Name == armor.Name)
+                            displayText = "(E) " + displayText;
+                    } 
+                    else if(item is ConsumableItem consumableItem)
+                    {
+                        displayText = $"{consumableItem.Name} ({consumableItem.Rolls}d{consumableItem.Face}+{consumableItem.BonusHeal} HP)";
+                    }
+                        
+                        Console.WriteLine("║" + CenterText(displayText, boxWidth) + "║");
                 }
             }
             Console.WriteLine(bottomBorder);

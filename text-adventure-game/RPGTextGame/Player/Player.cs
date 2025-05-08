@@ -23,8 +23,10 @@ namespace EntityPlayer
         public Room CurrentRoom { get; private set; }
         public bool ProfeciaAtivada { get; private set; } = false;
         public Inventory inventory { get; private set; }
-        public Weapon equippedWeapon { get; private set; }
+        public Weapon EquippedWeapon { get; private set; }
+        public Armor EquippedArmor { get; private set; }
         public static readonly Weapon DefaultWeapon = new Weapon("Mão", 0, 0);
+        public static readonly Armor DefaultArmor = new Armor("Sobretudo batido", "Um sobretudo que você usa desde que se conhece por gente, nunca perde sua beleza", 0);
 
         public Player() { }
 
@@ -44,7 +46,8 @@ namespace EntityPlayer
             Level = 1;
             IsAlive = true;
             inventory = new Inventory();
-            equippedWeapon = DefaultWeapon;
+            EquippedWeapon = DefaultWeapon;
+            EquippedArmor = DefaultArmor;
         }
 
         public void ProphecyActivated()
@@ -64,7 +67,7 @@ namespace EntityPlayer
         }
 
         public void Heal(ConsumableItem consumableToUse)
-        {           
+        {
             if (consumableToUse != null && inventory.Itens.Contains(consumableToUse))
             {
                 inventory.RemoveItem(consumableToUse);
@@ -124,7 +127,7 @@ namespace EntityPlayer
 
         public void Attack(Enemy monster, Random random)
         {
-            int attack = Strength + equippedWeapon.RollDamage();
+            int attack = Strength + EquippedWeapon.RollDamage();
 
             Console.WriteLine($"{Name} atacou {monster.Name} e causou {attack} de dano.");
 
@@ -150,7 +153,7 @@ namespace EntityPlayer
 
         public void SetBaseDefense()
         {
-            Defense = BaseDefense;
+            Defense = BaseDefense + EquippedArmor.DefenseAmount;
         }
 
         public void VerifyLevelUp()
@@ -163,14 +166,17 @@ namespace EntityPlayer
             }
         }
 
-        public Weapon BuscarArmaNoInventario(string nome)
+        public IEquippable BuscarItemEquipavelNoInventario(string nome)
         {
             foreach (var item in inventory.Itens)
             {
-
-                if (item is Weapon weapon && TextUtils.RemoverAcentos(weapon.Name).Equals(nome, StringComparison.OrdinalIgnoreCase))
+                if (item is IEquippable equipavel)
                 {
-                    return weapon;
+                    string nomeItem = TextUtils.RemoverAcentos(item.Name).ToLower();
+                    if (nome == nomeItem)
+                    {
+                        return equipavel;
+                    }
                 }
             }
             return null;
@@ -180,10 +186,12 @@ namespace EntityPlayer
         {
             foreach (var item in inventory.Itens)
             {
-
-                if (item is ConsumableItem potion && TextUtils.RemoverAcentos(potion.Name).Equals(nome, StringComparison.OrdinalIgnoreCase))
+                if (item is ConsumableItem potion)
                 {
-                    return potion;
+                    if (TextUtils.RemoverAcentos(potion.Name).Equals(nome, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return potion;
+                    }
                 }
             }
             return null;
@@ -207,7 +215,27 @@ namespace EntityPlayer
 
         public void SetWeapon(Weapon weapon)
         {
-            equippedWeapon = weapon;
+            EquippedWeapon = weapon;
+            Console.WriteLine($"Você equipou a arma: {weapon.Name}");
+        }
+
+        public void SetArmor(Armor armor)
+        {
+            EquippedArmor = armor;
+            Console.WriteLine($"Você equipou a armadura: {armor.Name}");
+        }
+
+        public void EquiparItem(IEquippable item)
+        {
+            if (item is Weapon weapon)
+            {
+                SetWeapon(weapon);
+            }
+            else if (item is Armor armor)
+            {
+                SetArmor(armor);
+                SetBaseDefense();
+            }
         }
 
         public override string ToString()
@@ -216,11 +244,13 @@ namespace EntityPlayer
             sb.AppendLine($"Nome: {Name}");
             sb.AppendLine($"Nível: {Level}");
             sb.AppendLine($"Vida: {Health}/{MaxHealth}");
+            sb.AppendLine($"Defesa base: {EquippedArmor.DefenseAmount}");
             sb.AppendLine($"Força: {Strength}");
             sb.AppendLine($"Gold: {Coins}");
             sb.AppendLine($"Experiência: {Experience}/{RequiredExperience}");
-            string equipped = equippedWeapon == DefaultWeapon ? equippedWeapon.Name + " (+0)" : $"{equippedWeapon.Name} (+{equippedWeapon.Rolls}d{equippedWeapon.Face})";
-            sb.AppendLine($"Arma equipada: {equipped}");
+            string equippedW = EquippedWeapon == DefaultWeapon ? EquippedWeapon.Name + " (+0)" : $"{EquippedWeapon.Name} (+{EquippedWeapon.Rolls}d{EquippedWeapon.Face})";
+            sb.AppendLine($"Arma equipada: {equippedW}");
+            sb.AppendLine($"Armadura equipada: {EquippedArmor.Name} (+{EquippedArmor.DefenseAmount})");
             return sb.ToString();
         }
     }
