@@ -1,6 +1,4 @@
-﻿using Enemies;
-using EntityPlayer;
-using System;
+﻿using EntityPlayer;
 
 namespace Enemies
 {

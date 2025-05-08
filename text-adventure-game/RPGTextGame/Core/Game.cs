@@ -1,7 +1,6 @@
 ﻿using EntityPlayer;
 using Util;
 using Scripts;
-using System;
 using Battle;
 using World;
 using Items;
@@ -63,8 +62,8 @@ namespace Core
 
             Console.Clear();
 
-            //ScriptManager.ScriptedIntroScene();
-            //Encounter.FirstEncounter();
+            ScriptManager.ScriptedIntroScene();
+            Encounter.FirstEncounter();
             Weapon weapon = new Weapon("Espada curta", 1, 6, "Uma espada enferrujada, porém bastante confiável");
             Weapon weapon2 = new Weapon("Espada do Guts", 3, 10, "Espada fodona");
             Weapon weapon3 = new Weapon("Caçadora de cabeças", 2, 12, "Pitola do chamber lol");

@@ -1,5 +1,4 @@
-﻿using System;
-using Util;
+﻿using Util;
 
 namespace Items
 {

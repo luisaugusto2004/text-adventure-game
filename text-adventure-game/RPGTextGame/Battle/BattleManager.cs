@@ -1,11 +1,8 @@
 ﻿using EntityPlayer;
 using Enemies;
-using System;
 using Util;
 using Core;
 using Scripts;
-using System.Threading;
-using System.Numerics;
 
 namespace Battle
 {

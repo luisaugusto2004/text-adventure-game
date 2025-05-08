@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace World
+﻿namespace World
 {
     class Room
     {

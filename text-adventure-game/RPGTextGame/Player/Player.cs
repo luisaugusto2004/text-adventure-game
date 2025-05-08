@@ -1,10 +1,9 @@
-﻿using System.Globalization;
-using System.Text;
+﻿using System.Text;
 using Enemies;
 using Items;
-using Scripts;
 using World;
 using Util;
+
 namespace EntityPlayer
 {
     class Player

@@ -1,11 +1,10 @@
 ﻿using Battle;
 using EntityPlayer;
-using Items;
-using System;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Util;
 using World;
+
 [assembly: InternalsVisibleTo("text-adventure-game.Test")]
 namespace Core
 {

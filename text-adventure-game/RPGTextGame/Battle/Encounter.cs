@@ -1,8 +1,6 @@
 ﻿using Core;
 using Enemies;
 using EntityPlayer;
-using System;
-using System.Diagnostics.Metrics;
 
 namespace Battle
 {

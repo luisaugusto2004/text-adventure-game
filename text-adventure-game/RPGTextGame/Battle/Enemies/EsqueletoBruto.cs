@@ -1,10 +1,4 @@
-﻿using Enemies;
-using EntityPlayer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EntityPlayer;
 
 namespace Enemies
 {

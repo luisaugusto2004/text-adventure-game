@@ -1,6 +1,4 @@
 ﻿using Core;
-using EntityPlayer;
-using System;
 using Util;
 
 namespace Scripts
