@@ -16,6 +16,17 @@ namespace Items
             Itens.Add(item);
         }
 
+        public void RemoveItem(Item item)
+        {
+            for (int i = 0; i < Itens.Count; i++)
+            {
+                if (Itens[i] == item)
+                {
+                    Itens.RemoveAt(i);
+                }
+            }
+        }
+
         public void ListItens(Player player)
         {
             List<Item> sortedItems = Itens.OrderBy(i => i.Name).ToList();

@@ -56,7 +56,7 @@ namespace Core
             cemiterio.SetExits(cemeteryExits);
             cidade.SetExits(cityExits);
             saloon.SetExits(saloonExits);
-            loja.SetExits(storeExits);            
+            loja.SetExits(storeExits);
 
             TextPrinter.Print("Insira seu nome: ", 50);
             currentPlayer = new Player(Console.ReadLine(), 30, 10);
@@ -68,9 +68,13 @@ namespace Core
             Weapon weapon = new Weapon("Espada curta", 1, 6, "Uma espada enferrujada, porém bastante confiável");
             Weapon weapon2 = new Weapon("Espada do Guts", 3, 10, "Espada fodona");
             Weapon weapon3 = new Weapon("Caçadora de cabeças", 2, 12, "Pitola do chamber lol");
+            ConsumableItem potion1 = new ConsumableItem("Poção de cura", "Blabalbala", 4, 4, 4);
+            ConsumableItem potion2 = new ConsumableItem("Poção de cura +1", "Blabalbala", 4, 4, 8);
             currentPlayer.inventory.AddItem(weapon);
             currentPlayer.inventory.AddItem(weapon2);
             currentPlayer.inventory.AddItem(weapon3);
+            currentPlayer.inventory.AddItem(potion1);
+            currentPlayer.inventory.AddItem(potion2);
 
             currentPlayer.SetRoom(cidade);
             while (true)

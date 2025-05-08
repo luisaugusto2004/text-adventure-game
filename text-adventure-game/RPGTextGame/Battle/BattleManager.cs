@@ -29,8 +29,8 @@ namespace Battle
                 Console.Clear();
                 ShowBattleStatus(player, enemy);
                 Console.WriteLine();
-                if (!enemy.IsAlive)                
-                    return;            
+                if (!enemy.IsAlive)
+                    return;
                 EnemyTurn(player, enemy);
                 if (HandlePlayerDefeatedByEncapuzado(player, enemy)) return;
                 // TODO: Implementar lógica quando o jogador morrer em encontros aleatórios.
@@ -90,7 +90,7 @@ namespace Battle
             }
             else if (input == "h")
             {
-                player.Heal(Game.GlobalRandom.Next(1, 20));
+                player.Heal(player.BuscarPocaoMaisForteNoInventario());
                 Console.ReadLine();
             }
             else if (input == "r")
@@ -155,7 +155,7 @@ namespace Battle
                 switch (turns)
                 {
                     case 1:
-                        TextPrinter.Print("O encapuzado observa você em silêncio. Seus olhos brilham sob a sombra do capuz.", 30);                        
+                        TextPrinter.Print("O encapuzado observa você em silêncio. Seus olhos brilham sob a sombra do capuz.", 30);
                         Console.ReadLine();
                         turns++;
                         return true;

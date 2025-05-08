@@ -1,14 +1,29 @@
 ﻿using System;
+using Util;
 
 namespace Items
 {
     class ConsumableItem : Item
     {
-        private int healthGain;
+        public int Rolls { get; private set; }
+        public int Face { get; private set; }
+        public int BonusHeal { get; private set; }
 
-        public ConsumableItem(string name, string description, int _healthGain) : base(name, description) 
+        public ConsumableItem(string name, string description, int rolls, int face, int bonus) : base(name, description) 
         {
-            healthGain = _healthGain;  
+            Rolls = rolls;
+            Face = face;
+            BonusHeal = bonus;
+        }
+
+        public int RollHeal()
+        {
+            return RollDice.Roll(Rolls, Face) + BonusHeal;
+        }
+
+        public int StrongerPotion()
+        {
+            return (Rolls * Face) + BonusHeal;
         }
     }
 }

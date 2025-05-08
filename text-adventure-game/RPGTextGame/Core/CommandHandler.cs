@@ -60,6 +60,9 @@ namespace Core
                 case "inventario":
                     player.inventory.ListItens(player);
                     break;
+                case "usar":
+                    Usar(arg);
+                    break;
                 default:
                     Console.WriteLine("Digite um comando válido");
                     Console.ReadLine();
@@ -67,33 +70,57 @@ namespace Core
             }
         }
 
+        private void Usar(string? arg)
+        {
+
+            if (string.IsNullOrWhiteSpace(arg))
+            {
+                Console.WriteLine("Digite algo para usar");
+                Console.ReadLine();
+                return;
+            }
+
+            var nameItem = TextUtils.RemoverAcentos(arg);
+            var consumableItem = player.BuscarPocaoNoInventario(nameItem);
+
+            if (consumableItem != null)
+            {              
+                player.Heal(consumableItem);
+            }
+            else
+            {
+                Console.WriteLine("Você não tem esse item no inventario");
+            }
+            Console.ReadLine();
+        }
+
         private void Equipar(string? arg)
         {
-            var nameWeapon = TextUtils.RemoverAcentos(arg);
-            Weapon weaponToEquip = null;
-            if (arg == null)
+            if (string.IsNullOrWhiteSpace(arg))
             {
                 Console.WriteLine("Digite algo para equipar");
                 Console.ReadLine();
                 return;
             }
-            if (player.BuscarArmaNoInventario(nameWeapon) != null)
+
+            var nameWeapon = TextUtils.RemoverAcentos(arg);
+            Weapon weaponToEquip = player.BuscarArmaNoInventario(nameWeapon);
+
+            if (weaponToEquip != null)
             {
-                weaponToEquip = player.BuscarArmaNoInventario(nameWeapon);
                 player.SetWeapon(weaponToEquip);
                 Console.WriteLine($"Você equipou {weaponToEquip.Name}");
-                Console.ReadLine();
             }
             else
             {
                 Console.WriteLine("Você não tem esse item no inventario");
-                Console.ReadLine();
             }
+            Console.ReadLine();
         }
 
         private void Examinar(string? arg)
         {
-            if (arg == null)
+            if (string.IsNullOrWhiteSpace(arg))
             {
                 Console.WriteLine("Digite o que quer examinar");
                 Console.ReadLine();
@@ -106,18 +133,16 @@ namespace Core
             if (arg == "sala")
             {
                 Console.WriteLine(player.CurrentRoom.Description);
-                Console.ReadLine();
             }
             else if (argSemAcento == nomeArmaSemAcento)
             {
                 Console.WriteLine(player.equippedWeapon.Description);
-                Console.ReadLine();
             }
             else
             {
                 Console.WriteLine("Escolha algo válido para examinar");
-                Console.ReadLine();
             }
+            Console.ReadLine();
         }
 
         private void Lutar()
@@ -137,7 +162,7 @@ namespace Core
 
         private void Deslocar(string? arg)
         {
-            if (arg == null)
+            if (string.IsNullOrWhiteSpace(arg))
             {
                 Console.WriteLine("Digite para onde quer ir");
                 Console.ReadLine();
@@ -148,13 +173,13 @@ namespace Core
             {
                 player.SetRoom(nextRoom);
                 Console.WriteLine($"Você se moveu para {player.CurrentRoom.Name}.");
-                Console.ReadLine();
+
             }
             else
             {
                 Console.WriteLine("Modo de usar: deslocar <saida>");
-                Console.ReadLine();
             }
+            Console.ReadLine();
         }
     }
 }

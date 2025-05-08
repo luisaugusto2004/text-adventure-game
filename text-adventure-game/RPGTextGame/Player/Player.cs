@@ -15,7 +15,6 @@ namespace EntityPlayer
         public int Strength { get; private set; }
         public int Defense { get; private set; }
         public int BaseDefense { get; private set; }
-        public int Potions { get; private set; }
         public int Coins { get; private set; }
         public int RequiredExperience { get; private set; }
         public int Experience { get; private set; }
@@ -38,7 +37,6 @@ namespace EntityPlayer
             Health = health;
             Strength = strenght;
             BaseDefense = 0;
-            Potions = 0;
             Defense = 0;
             Coins = 0;
             RequiredExperience = 50;
@@ -65,12 +63,14 @@ namespace EntityPlayer
             Health = MaxHealth;
         }
 
-        public void Heal(int amount)
-        {
-            if (Potions >= 1)
+        public void Heal(ConsumableItem consumableToUse)
+        {           
+            if (consumableToUse != null && inventory.Itens.Contains(consumableToUse))
             {
+                inventory.RemoveItem(consumableToUse);
+
                 int healthBefore = Health;
-                Health += amount;
+                Health += consumableToUse.RollHeal();
 
                 if (Health > MaxHealth)
                 {
@@ -174,6 +174,35 @@ namespace EntityPlayer
                 }
             }
             return null;
+        }
+
+        public ConsumableItem BuscarPocaoNoInventario(string nome)
+        {
+            foreach (var item in inventory.Itens)
+            {
+
+                if (item is ConsumableItem potion && TextUtils.RemoverAcentos(potion.Name).Equals(nome, StringComparison.OrdinalIgnoreCase))
+                {
+                    return potion;
+                }
+            }
+            return null;
+        }
+
+        public ConsumableItem BuscarPocaoMaisForteNoInventario()
+        {
+            ConsumableItem lastPotion = null;
+            foreach (var item in inventory.Itens)
+            {
+                if (item is ConsumableItem potion)
+                {
+                    if (lastPotion == null || potion.StrongerPotion() > lastPotion.StrongerPotion())
+                    {
+                        lastPotion = potion;
+                    }
+                }
+            }
+            return lastPotion;
         }
 
         public void SetWeapon(Weapon weapon)
