@@ -1,17 +1,19 @@
-﻿using EntityPlayer;
+using EntityPlayer;
 using Items;
 
 namespace World
 {
     class ItemShop
     {
-            List<Item> itens = new List<Item>()
+        private readonly Player player;
+
+        List<Item> itens = new List<Item>()
             {
-                new Weapon("Espada curta", 1, 6, 20, "Uma espada enferrujada, barata e nada potente, mas dá pro gasto."),
+                new Weapon("Espada curta", 1, 6, 30, "Uma espada enferrujada, barata e nada potente, mas dá pro gasto."),
 
                 new Armor("Armadura incompleta", "Um bracelete de couro para o braço esquerdo, um colete alcochoado e duas ombreiras, é tudo o que você precisa", 4, 30),
 
-                new Weapon("Forcado", 2, 8, 80, "\"Ideal para churrascos... se você for o prato principal.\""),
+                new Weapon("Forcado", 2, 8, 100, "\"Ideal para churrascos... se você for o prato principal.\""),
 
                 new Armor("Colete de Couro Reforçado", "Feito para suportar o que vier, com couro endurecido e um toque de perigo.\n" +
                                                        " Não é perfeito, mas com certeza vai manter você inteiro.", 10, 100),
@@ -30,13 +32,18 @@ namespace World
                                    "Não subestime o poder dessa mistura, ela pode ser sua ultima esperança.\"", 5, 4, 8, 20)
             };
 
+        public ItemShop(Player player)
+        {
+            this.player = player;
+        }
+
         public void PrintShop()
         {
             Console.WriteLine("Bem-vindo à Loja! Aqui estão os itens disponíveis:");
             Console.WriteLine("════════════════════════════════════════════");
             Console.WriteLine("{0,-30} {1,12}", "Item", "Preço (PO)");
             Console.WriteLine("════════════════════════════════════════════");
-            
+
             for (int i = 0; i < itens.Count; i++)
             {
                 string itemName = itens[i].Name;
@@ -44,25 +51,30 @@ namespace World
 
                 Console.WriteLine("{0,-30} {1,9} PO", $"[{i + 1}] {itemName}", price);
             }
-
+            Console.WriteLine();
+            Console.WriteLine("{0, -30} {1,12}", "", $"Gold: {player.Coins} PO");
             Console.WriteLine("════════════════════════════════════════════");
             Console.WriteLine("Digite \"comprar <numero do item que deseja comprar>\"");
         }
 
-        public void ProcessPurchase(Player player, string? arg)
+        public void ProcessPurchase(string? arg)
         {
-            if (int.TryParse(arg, out int escolha))
+            if (!int.TryParse(arg, out int escolha))
+            {
+                Console.WriteLine("Escolha invalida");
+                return;
+            }
+            else
             {
                 int index = escolha - 1;
 
-                if(index >= 0 && index < itens.Count)
+                if (index >= 0 && index < itens.Count)
                 {
                     Item itemSelecionado = itens[index];
 
                     if (!player.CanBuy(itemSelecionado))
                     {
                         Console.WriteLine("Você não tem ouro suficiente.");
-                        Console.ReadLine();
                         return;
                     }
 
@@ -83,7 +95,7 @@ namespace World
                 }
                 else
                 {
-                    Console.WriteLine("Escolha invalida");
+                    Console.WriteLine("Escreva um valor válido");
                 }
             }
         }

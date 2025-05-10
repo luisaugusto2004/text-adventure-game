@@ -59,17 +59,20 @@ namespace Core
 
             TextPrinter.Print("Insira seu nome: ", 50);
             currentPlayer = new Player(Console.ReadLine(), 30, 10);
+            ItemShop itemShop = new ItemShop(currentPlayer);
+
+            CommandHandler handler = new CommandHandler(currentPlayer, itemShop);
 
             Console.Clear();
 
             //ScriptManager.ScriptedIntroScene();
             //Encounter.FirstEncounter();
-            ItemShop itemShop = new ItemShop();
             currentPlayer.SetRoom(loja);
             while (true)
             {
                 while (!BattleManager.GetInCombat())
                 {
+                    // TODO: Fazer uma hud decente
                     Console.Clear();
                     Console.Write("Sala atual: ");
                     Console.WriteLine(currentPlayer.CurrentRoom.Name);
@@ -81,9 +84,7 @@ namespace Core
                     }
                     Console.WriteLine();
                     Console.Write("> ");
-                    string[] input = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                    itemShop.ProcessPurchase(currentPlayer, input[0]);
-                    CommandHandler handler = new CommandHandler(currentPlayer);
+                    string[] input = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);                                       
                     handler.Handle(input);
                     Console.Clear();
                 }

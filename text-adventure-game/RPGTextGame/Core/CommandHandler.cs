@@ -11,10 +11,17 @@ namespace Core
     class CommandHandler
     {
         private readonly Player player;
+        private readonly ItemShop shop;
 
         public CommandHandler(Player player)
         {
             this.player = player;
+        }
+
+        public CommandHandler(Player player, ItemShop shop)
+        {
+            this.player = player;
+            this.shop = shop;
         }
 
         public void Handle(string[] input)
@@ -62,11 +69,27 @@ namespace Core
                 case "usar":
                     Usar(arg);
                     break;
+                case "comprar":
+                    Comprar(arg);
+                    break;
                 default:
                     Console.WriteLine("Digite um comando válido");
                     Console.ReadLine();
                     break;
             }
+        }
+
+        private void Comprar(string? arg)
+        {
+            if (string.IsNullOrEmpty(arg))
+            {
+                Console.WriteLine("Digite o número do que você quer comprar");
+                Console.ReadLine();
+                return;
+            }
+
+            shop.ProcessPurchase(arg);
+            Console.ReadLine();
         }
 
         private void Usar(string? arg)
@@ -83,7 +106,7 @@ namespace Core
             var consumableItem = player.BuscarPocaoNoInventario(nameItem);
 
             if (consumableItem != null)
-            {              
+            {
                 player.Heal(consumableItem);
             }
             else
@@ -148,7 +171,7 @@ namespace Core
             {
                 BattleManager.SetInCombat(true);
                 while (BattleManager.GetInCombat())
-                    Encounter.RandomEncounter(player);                    
+                    Encounter.RandomEncounter(player);
             }
             else
             {

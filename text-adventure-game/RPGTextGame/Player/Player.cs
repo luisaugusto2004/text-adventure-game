@@ -39,7 +39,7 @@ namespace EntityPlayer
             Strength = strenght;
             BaseDefense = 0;
             Defense = 0;
-            Coins = 1000;
+            Coins = 10;
             RequiredExperience = 50;
             Experience = 0;
             Level = 1;
@@ -154,7 +154,7 @@ namespace EntityPlayer
             {
                 int goldAmount = random.Next(4, monster.MaxGold);
                 Console.WriteLine($"{monster.Name} derrotado!");
-                Console.WriteLine($"{monster.Name} dropou {goldAmount} moedas de ouro!");
+                Console.WriteLine($"{monster.Name} dropou {goldAmount} PO!");
                 Console.WriteLine($"Você recebeu {monster.ExperienceGain} XP!");
 
                 GainGold(goldAmount);
