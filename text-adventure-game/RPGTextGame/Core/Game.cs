@@ -1,7 +1,6 @@
 ﻿using EntityPlayer;
 using Util;
 using Scripts;
-using System;
 using Battle;
 using World;
 using Items;
@@ -56,29 +55,36 @@ namespace Core
             cemiterio.SetExits(cemeteryExits);
             cidade.SetExits(cityExits);
             saloon.SetExits(saloonExits);
-            loja.SetExits(storeExits);            
+            loja.SetExits(storeExits);
 
             TextPrinter.Print("Insira seu nome: ", 50);
             currentPlayer = new Player(Console.ReadLine(), 30, 10);
+            ItemShop itemShop = new ItemShop(currentPlayer);
+
+            CommandHandler handler = new CommandHandler(currentPlayer, itemShop);
 
             Console.Clear();
 
-            ScriptManager.ScriptedIntroScene();
-            Encounter.FirstEncounter();
-
-            currentPlayer.SetRoom(cidade);
+            //ScriptManager.ScriptedIntroScene();
+            //Encounter.FirstEncounter();
+            currentPlayer.SetRoom(loja);
             while (true)
             {
                 while (!BattleManager.GetInCombat())
                 {
+                    // TODO: Fazer uma hud decente
                     Console.Clear();
                     Console.Write("Sala atual: ");
                     Console.WriteLine(currentPlayer.CurrentRoom.Name);
                     PrintCurrentExits(currentPlayer.CurrentRoom);
+                    if(currentPlayer.CurrentRoom == loja)
+                    {
+                        Console.WriteLine();
+                        itemShop.PrintShop();
+                    }
                     Console.WriteLine();
                     Console.Write("> ");
-                    string[] input = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                    CommandHandler handler = new CommandHandler(currentPlayer);
+                    string[] input = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);                                       
                     handler.Handle(input);
                     Console.Clear();
                 }

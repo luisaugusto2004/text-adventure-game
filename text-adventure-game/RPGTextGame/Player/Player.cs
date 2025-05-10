@@ -1,9 +1,9 @@
-﻿using System.Globalization;
-using System.Text;
+﻿using System.Text;
 using Enemies;
 using Items;
-using Scripts;
 using World;
+using Util;
+
 namespace EntityPlayer
 {
     class Player
@@ -14,7 +14,6 @@ namespace EntityPlayer
         public int Strength { get; private set; }
         public int Defense { get; private set; }
         public int BaseDefense { get; private set; }
-        public int Potions { get; private set; }
         public int Coins { get; private set; }
         public int RequiredExperience { get; private set; }
         public int Experience { get; private set; }
@@ -23,8 +22,10 @@ namespace EntityPlayer
         public Room CurrentRoom { get; private set; }
         public bool ProfeciaAtivada { get; private set; } = false;
         public Inventory inventory { get; private set; }
-        public Weapon equippedWeapon { get; private set; }
-        public static readonly Weapon DefaultWeapon = new Weapon("Mão", 0);
+        public Weapon EquippedWeapon { get; private set; }
+        public Armor EquippedArmor { get; private set; }
+        public static readonly Weapon DefaultWeapon = new Weapon("Mão", 1, 3, 0);
+        public static readonly Armor DefaultArmor = new Armor("Sobretudo batido", "Um sobretudo que você usa desde que se conhece por gente, nunca perde sua beleza", 0, 0);
 
         public Player() { }
 
@@ -37,15 +38,15 @@ namespace EntityPlayer
             Health = health;
             Strength = strenght;
             BaseDefense = 0;
-            Potions = 0;
             Defense = 0;
-            Coins = 0;
+            Coins = 10;
             RequiredExperience = 50;
             Experience = 0;
             Level = 1;
             IsAlive = true;
             inventory = new Inventory();
-            equippedWeapon = DefaultWeapon;
+            EquippedWeapon = DefaultWeapon;
+            EquippedArmor = DefaultArmor;
         }
 
         public void ProphecyActivated()
@@ -64,12 +65,14 @@ namespace EntityPlayer
             Health = MaxHealth;
         }
 
-        public void Heal(int amount)
+        public void Heal(ConsumableItem consumableToUse)
         {
-            if (Potions >= 1)
+            if (consumableToUse != null && inventory.Itens.Contains(consumableToUse))
             {
+                inventory.RemoveItem(consumableToUse);
+
                 int healthBefore = Health;
-                Health += amount;
+                Health += consumableToUse.RollHeal();
 
                 if (Health > MaxHealth)
                 {
@@ -108,6 +111,24 @@ namespace EntityPlayer
             Coins += amount;
         }
 
+        public void LoseGold(int amount)
+        {
+            Coins -= amount;
+        }
+
+        public bool CanBuy(Item item)
+        {
+            if (Coins >= item.Price)
+                return true;
+
+            return false;
+        }
+
+        public void AddItem(Item item)
+        {
+            inventory.AddItem(item);
+        }
+
         public void SetRoom(Room room)
         {
             CurrentRoom = room;
@@ -123,7 +144,7 @@ namespace EntityPlayer
 
         public void Attack(Enemy monster, Random random)
         {
-            int attack = Strength + equippedWeapon.Damage + (random.Next(1, 7));
+            int attack = Strength + EquippedWeapon.RollDamage();
 
             Console.WriteLine($"{Name} atacou {monster.Name} e causou {attack} de dano.");
 
@@ -133,7 +154,7 @@ namespace EntityPlayer
             {
                 int goldAmount = random.Next(4, monster.MaxGold);
                 Console.WriteLine($"{monster.Name} derrotado!");
-                Console.WriteLine($"{monster.Name} dropou {goldAmount} moedas de ouro!");
+                Console.WriteLine($"{monster.Name} dropou {goldAmount} PO!");
                 Console.WriteLine($"Você recebeu {monster.ExperienceGain} XP!");
 
                 GainGold(goldAmount);
@@ -144,12 +165,12 @@ namespace EntityPlayer
 
         public void Defend()
         {
-            Defense = BaseDefense + 5;
+            Defense = BaseDefense + EquippedArmor.DefenseAmount + 5;
         }
 
-        public void SetBaseDefense()
+        public void SetDefense()
         {
-            Defense = BaseDefense;
+            Defense = BaseDefense + EquippedArmor.DefenseAmount;
         }
 
         public void VerifyLevelUp()
@@ -162,21 +183,76 @@ namespace EntityPlayer
             }
         }
 
-        public Weapon BuscarArmaNoInventario(string nome)
+        public IEquippable BuscarItemEquipavelNoInventario(string nome)
         {
             foreach (var item in inventory.Itens)
             {
-                if (item is Weapon weapon && weapon.Name.Equals(nome, StringComparison.OrdinalIgnoreCase))
+                if (item is IEquippable equipavel)
                 {
-                    return weapon;
+                    string nomeItem = TextUtils.RemoverAcentos(item.Name).ToLower();
+                    if (nome == nomeItem)
+                    {
+                        return equipavel;
+                    }
                 }
             }
             return null;
         }
 
+        public ConsumableItem BuscarPocaoNoInventario(string nome)
+        {
+            foreach (var item in inventory.Itens)
+            {
+                if (item is ConsumableItem potion)
+                {
+                    if (TextUtils.RemoverAcentos(potion.Name).Equals(nome, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return potion;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public ConsumableItem BuscarPocaoMaisForteNoInventario()
+        {
+            ConsumableItem lastPotion = null;
+            foreach (var item in inventory.Itens)
+            {
+                if (item is ConsumableItem potion)
+                {
+                    if (lastPotion == null || potion.StrongerPotion() > lastPotion.StrongerPotion())
+                    {
+                        lastPotion = potion;
+                    }
+                }
+            }
+            return lastPotion;
+        }
+
         public void SetWeapon(Weapon weapon)
         {
-            equippedWeapon = weapon;
+            EquippedWeapon = weapon;
+            Console.WriteLine($"Você equipou a arma: {weapon.Name}");
+        }
+
+        public void SetArmor(Armor armor)
+        {
+            EquippedArmor = armor;
+            SetDefense();
+            Console.WriteLine($"Você equipou a armadura: {armor.Name}");
+        }
+
+        public void EquiparItem(IEquippable item)
+        {
+            if (item is Weapon weapon)
+            {
+                SetWeapon(weapon);
+            }
+            else if (item is Armor armor)
+            {
+                SetArmor(armor);
+            }
         }
 
         public override string ToString()
@@ -185,10 +261,13 @@ namespace EntityPlayer
             sb.AppendLine($"Nome: {Name}");
             sb.AppendLine($"Nível: {Level}");
             sb.AppendLine($"Vida: {Health}/{MaxHealth}");
+            sb.AppendLine($"Defesa: {Defense}");
             sb.AppendLine($"Força: {Strength}");
             sb.AppendLine($"Gold: {Coins}");
             sb.AppendLine($"Experiência: {Experience}/{RequiredExperience}");
-            sb.AppendLine($"Arma equipada: {equippedWeapon.Name}");
+            string equippedW = EquippedWeapon == DefaultWeapon ? EquippedWeapon.Name + " (+0)" : $"{EquippedWeapon.Name} (+{EquippedWeapon.Rolls}d{EquippedWeapon.Face})";
+            sb.AppendLine($"Arma equipada: {equippedW}");
+            sb.AppendLine($"Armadura equipada: {EquippedArmor.Name} (+{EquippedArmor.DefenseAmount})");
             return sb.ToString();
         }
     }

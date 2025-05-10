@@ -1,4 +1,6 @@
-﻿namespace Items
+﻿using EntityPlayer;
+
+namespace Items
 {
     class Inventory
     {
@@ -14,8 +16,20 @@
             Itens.Add(item);
         }
 
-        public void ListItens()
+        public void RemoveItem(Item item)
         {
+            for (int i = 0; i < Itens.Count; i++)
+            {
+                if (Itens[i] == item)
+                {
+                    Itens.RemoveAt(i);
+                }
+            }
+        }
+
+        public void ListItens(Player player)
+        {
+            List<Item> sortedItems = Itens.OrderBy(i => i.Name).ToList();
             const int boxWidth = 40;
             string topBorder = "╔" + new string('═', boxWidth) + "╗";
             string title = "Mochila";
@@ -28,17 +42,32 @@
 
             if (Itens.Count == 0)
             {
-                Console.WriteLine("║"+ CenterText("(vazio)", boxWidth)+"║");
+                Console.WriteLine("║" + CenterText("(vazio)", boxWidth) + "║");
             }
             else
             {
-                foreach (Item item in Itens)
+                foreach (Item item in sortedItems)
                 {
-                    string itemText = item is Weapon weapon
-                ? $"{item.Name} (+{weapon.Damage})"
-                : item.Name;
+                    string displayText = item.Name;
 
-                    Console.WriteLine("║" + CenterText(itemText, boxWidth) + "║");
+                    if (item is Weapon weapon)
+                    {
+                        displayText = $"{weapon.Name} (+{weapon.Rolls}d{weapon.Face} dano)";
+                        if (player.EquippedWeapon?.Name == weapon.Name)
+                            displayText = "(E) " + displayText;
+                    }
+                    else if (item is Armor armor)
+                    {
+                        displayText = $"{armor.Name} (+{armor.DefenseAmount} def)";
+                        if (player.EquippedArmor?.Name == armor.Name)
+                            displayText = "(E) " + displayText;
+                    } 
+                    else if(item is ConsumableItem consumableItem)
+                    {
+                        displayText = $"{consumableItem.Name} ({consumableItem.Rolls}d{consumableItem.Face}+{consumableItem.BonusHeal} HP)";
+                    }
+                        
+                        Console.WriteLine("║" + CenterText(displayText, boxWidth) + "║");
                 }
             }
             Console.WriteLine(bottomBorder);

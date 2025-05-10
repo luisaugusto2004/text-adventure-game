@@ -1,7 +1,4 @@
-﻿using EntityPlayer;
-using Core;
-using Battle;
-using Enemies;
+﻿using Core;
 
 namespace text_adventure_game
 {

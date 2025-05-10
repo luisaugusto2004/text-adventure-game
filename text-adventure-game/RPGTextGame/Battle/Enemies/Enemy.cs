@@ -1,5 +1,5 @@
 ﻿using EntityPlayer;
-using System;
+using Util;
 
 namespace Enemies
 {
@@ -9,16 +9,20 @@ namespace Enemies
         public int MaxHealth { get; private set; }
         public int Health { get; private set; }
         public int Strength { get; private set; }
+        public int Rolls { get; private set; }
+        public int Face { get; private set; }
         public int ExperienceGain { get; private set; }
         public int MaxGold { get; private set; }
         public bool IsAlive { get; private set; }
 
-        public Enemy(string name, int health, int strenght, int experienceGain, int maxGold)
+        public Enemy(string name, int health, int strenght, int rolls, int face, int experienceGain, int maxGold)
         {
             Name = name;
             MaxHealth = health;
             Health = health;
             Strength = strenght;
+            Rolls = rolls;
+            Face = face;
             ExperienceGain = experienceGain;
             MaxGold = maxGold;
             IsAlive = true;
@@ -35,5 +39,10 @@ namespace Enemies
         }
 
         public abstract void Attack(Player player, Random random);
+
+        public int RollDamage()
+        {
+            return RollDice.Roll(Rolls, Face);
+        }
     }
 }
