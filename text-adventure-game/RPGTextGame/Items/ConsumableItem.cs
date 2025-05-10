@@ -8,7 +8,7 @@ namespace Items
         public int Face { get; private set; }
         public int BonusHeal { get; private set; }
 
-        public ConsumableItem(string name, string description, int rolls, int face, int bonus) : base(name, description) 
+        public ConsumableItem(string name, string description, int rolls, int face, int bonus, int price) : base(name, description, price) 
         {
             Rolls = rolls;
             Face = face;

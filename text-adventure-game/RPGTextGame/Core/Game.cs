@@ -63,21 +63,7 @@ namespace Core
             Console.Clear();
 
             ScriptManager.ScriptedIntroScene();
-            Encounter.FirstEncounter();
-            Weapon weapon = new Weapon("Espada curta", 1, 6, "Uma espada enferrujada, porém bastante confiável");
-            Weapon weapon2 = new Weapon("Espada do Guts", 3, 10, "Espada fodona");
-            Weapon weapon3 = new Weapon("Caçadora de cabeças", 2, 12, "Pitola do chamber lol");
-            Armor armor1 = new Armor("Sobretudo do Caleb", "Sobretudo do lendário pistoleiro Caleb, há relatos que esse homem era um Deus, mas são apenas boatos", 30);
-            Armor armor2 = new Armor("Paletó de madeira", "*Emoji de caveira*", 10);
-            ConsumableItem potion1 = new ConsumableItem("Poção de cura", "Blabalbala", 4, 4, 4);
-            ConsumableItem potion2 = new ConsumableItem("Poção de cura +1", "Blabalbala", 4, 4, 8);
-            currentPlayer.inventory.AddItem(weapon);
-            currentPlayer.inventory.AddItem(weapon2);
-            currentPlayer.inventory.AddItem(weapon3);
-            currentPlayer.inventory.AddItem(potion1);
-            currentPlayer.inventory.AddItem(potion2);
-            currentPlayer.inventory.AddItem(armor1);
-            currentPlayer.inventory.AddItem(armor2);
+            Encounter.FirstEncounter();         
 
             currentPlayer.SetRoom(cemiterio);
             while (true)
