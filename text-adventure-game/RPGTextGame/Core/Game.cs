@@ -4,6 +4,8 @@ using Scripts;
 using Battle;
 using World;
 using Items;
+using System.Text.Json;
+using States;
 
 namespace Core
 {
@@ -12,7 +14,8 @@ namespace Core
 
         public static Player currentPlayer = new Player();
         public static Random GlobalRandom = new Random();
-
+        public static ItemShop ItemShop = new ItemShop(currentPlayer);
+        public GameState State = new GameState();
         public void Start()
         {
             Room cemiterio = new Room(
@@ -59,15 +62,23 @@ namespace Core
 
             TextPrinter.Print("Insira seu nome: ", 50);
             currentPlayer = new Player(Console.ReadLine(), 30, 10);
-            ItemShop itemShop = new ItemShop(currentPlayer);
+            currentPlayer.SetRoom(cidade);
 
-            CommandHandler handler = new CommandHandler(currentPlayer, itemShop);
+            ItemShop = new ItemShop(currentPlayer);
 
+            CommandHandler handler = new CommandHandler(currentPlayer, ItemShop);
+            State = new GameState()
+            {
+                PlayerData = currentPlayer,
+                ShopData = ItemShop,
+                StartTime = DateTime.Now,
+                SaveTime = DateTime.Now,
+                TotalPlayTime = TimeSpan.Zero
+            };
             Console.Clear();
 
             //ScriptManager.ScriptedIntroScene();
             //Encounter.FirstEncounter();
-            currentPlayer.SetRoom(loja);
             while (true)
             {
                 while (!BattleManager.GetInCombat())
@@ -80,7 +91,7 @@ namespace Core
                     if(currentPlayer.CurrentRoom == loja)
                     {
                         Console.WriteLine();
-                        itemShop.PrintShop();
+                        ItemShop.PrintShop();
                     }
                     Console.WriteLine();
                     Console.Write("> ");
@@ -99,6 +110,23 @@ namespace Core
             {
                 Console.WriteLine(r.Key);
             }
+        }
+
+        public static void Save(GameState state)
+        {
+            if (!Directory.Exists("saves"))
+            {
+                Directory.CreateDirectory("saves");
+            }            
+            string fileName = "saves/" + state.PlayerData.Id.ToString() + ".json";
+            var options = new JsonSerializerOptions { WriteIndented = true };   
+            string jsonStringPlayer = JsonSerializer.Serialize(state, options);
+            File.WriteAllText(fileName, jsonStringPlayer);
+        }
+
+        public void SaveGame()
+        {
+            Save(State);
         }
     }
 }
