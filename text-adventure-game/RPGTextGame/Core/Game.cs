@@ -62,10 +62,10 @@ namespace Core
 
             Console.Clear();
 
-            ScriptManager.ScriptedIntroScene();
-            Encounter.FirstEncounter();         
-
-            currentPlayer.SetRoom(cemiterio);
+            //ScriptManager.ScriptedIntroScene();
+            //Encounter.FirstEncounter();
+            ItemShop itemShop = new ItemShop();
+            currentPlayer.SetRoom(loja);
             while (true)
             {
                 while (!BattleManager.GetInCombat())
@@ -74,9 +74,15 @@ namespace Core
                     Console.Write("Sala atual: ");
                     Console.WriteLine(currentPlayer.CurrentRoom.Name);
                     PrintCurrentExits(currentPlayer.CurrentRoom);
+                    if(currentPlayer.CurrentRoom == loja)
+                    {
+                        Console.WriteLine();
+                        itemShop.PrintShop();
+                    }
                     Console.WriteLine();
                     Console.Write("> ");
                     string[] input = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    itemShop.ProcessPurchase(currentPlayer, input[0]);
                     CommandHandler handler = new CommandHandler(currentPlayer);
                     handler.Handle(input);
                     Console.Clear();

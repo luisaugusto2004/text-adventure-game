@@ -24,8 +24,8 @@ namespace EntityPlayer
         public Inventory inventory { get; private set; }
         public Weapon EquippedWeapon { get; private set; }
         public Armor EquippedArmor { get; private set; }
-        public static readonly Weapon DefaultWeapon = new Weapon("Mão", 1, 3);
-        public static readonly Armor DefaultArmor = new Armor("Sobretudo batido", "Um sobretudo que você usa desde que se conhece por gente, nunca perde sua beleza", 0);
+        public static readonly Weapon DefaultWeapon = new Weapon("Mão", 1, 3, 0);
+        public static readonly Armor DefaultArmor = new Armor("Sobretudo batido", "Um sobretudo que você usa desde que se conhece por gente, nunca perde sua beleza", 0, 0);
 
         public Player() { }
 
@@ -39,7 +39,7 @@ namespace EntityPlayer
             Strength = strenght;
             BaseDefense = 0;
             Defense = 0;
-            Coins = 0;
+            Coins = 1000;
             RequiredExperience = 50;
             Experience = 0;
             Level = 1;
@@ -109,6 +109,24 @@ namespace EntityPlayer
         public void GainGold(int amount)
         {
             Coins += amount;
+        }
+
+        public void LoseGold(int amount)
+        {
+            Coins -= amount;
+        }
+
+        public bool CanBuy(Item item)
+        {
+            if (Coins >= item.Price)
+                return true;
+
+            return false;
+        }
+
+        public void AddItem(Item item)
+        {
+            inventory.AddItem(item);
         }
 
         public void SetRoom(Room room)
