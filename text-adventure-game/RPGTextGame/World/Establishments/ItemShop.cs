@@ -64,40 +64,36 @@ namespace World
                 Console.WriteLine("Escolha invalida");
                 return;
             }
+
+            int index = escolha - 1;
+
+            if (index < 0 || index >= itens.Count)
+            {
+                Console.WriteLine("Escreva um valor válido");
+                return;
+            }
+
+            Item itemSelecionado = itens[index];
+
+            if (!player.CanBuy(itemSelecionado))
+            {
+                Console.WriteLine("Você não tem ouro suficiente.");
+                return;
+            }
+
+            player.LoseGold(itemSelecionado.Price);
+
+            if (itemSelecionado is ConsumableItem)
+            {
+                player.AddItem(itemSelecionado);
+            }
             else
             {
-                int index = escolha - 1;
-
-                if (index >= 0 && index < itens.Count)
-                {
-                    Item itemSelecionado = itens[index];
-
-                    if (!player.CanBuy(itemSelecionado))
-                    {
-                        Console.WriteLine("Você não tem ouro suficiente.");
-                        return;
-                    }
-
-                    player.LoseGold(itemSelecionado.Price);
-
-                    if (itemSelecionado is ConsumableItem)
-                    {
-                        player.AddItem(itemSelecionado);
-                    }
-                    else
-                    {
-                        player.AddItem(itemSelecionado);
-                        itens.Remove(itemSelecionado);
-                    }
-
-                    Console.WriteLine($"Você comprou {itemSelecionado.Name}");
-                    return;
-                }
-                else
-                {
-                    Console.WriteLine("Escreva um valor válido");
-                }
+                player.AddItem(itemSelecionado);
+                itens.Remove(itemSelecionado);
             }
+
+            Console.WriteLine($"Você comprou {itemSelecionado.Name}");
         }
     }
 }
