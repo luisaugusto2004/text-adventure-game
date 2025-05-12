@@ -3,28 +3,32 @@ using Enemies;
 using Items;
 using World;
 using Util;
+using System.Text.Json.Serialization;
 
 namespace EntityPlayer
 {
     class Player
-    {
-        public int Id { get; private set; }
-        public string Name { get; private set; } = string.Empty;
-        public int MaxHealth { get; private set; }
-        public int Health { get; private set; }
-        public int Strength { get; private set; }
-        public int Defense { get; private set; }
-        public int BaseDefense { get; private set; }
-        public int Coins { get; private set; }
-        public int RequiredExperience { get; private set; }
-        public int Experience { get; private set; }
-        public int Level { get; private set; }
-        public bool IsAlive { get; private set; }
+    {      
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public int MaxHealth { get; set; }
+        public int Health { get; set; }
+        public int Strength { get; set; }
+        public int Defense { get; set; }
+        public int BaseDefense { get; set; }
+        public int Coins { get; set; }
+        public int RequiredExperience { get; set; }
+        public int Experience { get; set; }
+        public int Level { get; set; }
+        public bool IsAlive { get; set; }
+        [JsonIgnore]
         public Room CurrentRoom { get; private set; }
+
+        public string CurrentRoomName { get; set; }
         public bool ProfeciaAtivada { get; private set; } = false;
-        public Inventory inventory { get; private set; }
-        public Weapon EquippedWeapon { get; private set; }
-        public Armor EquippedArmor { get; private set; }
+        public Inventory inventory { get; set; }
+        public Weapon EquippedWeapon { get; set; }
+        public Armor EquippedArmor { get; set; }
         public static readonly Weapon DefaultWeapon = new Weapon("Mão", 1, 3, 0);
         public static readonly Armor DefaultArmor = new Armor("Sobretudo batido", "Um sobretudo que você usa desde que se conhece por gente, nunca perde sua beleza", 0, 0);
 
@@ -48,6 +52,11 @@ namespace EntityPlayer
             inventory = new Inventory();
             EquippedWeapon = DefaultWeapon;
             EquippedArmor = DefaultArmor;
+        }
+
+        public void SetId(int id)
+        {
+            Id = id;
         }
 
         public void ProphecyActivated()
@@ -132,6 +141,7 @@ namespace EntityPlayer
 
         public void SetRoom(Room room)
         {
+            CurrentRoomName = room.Name;
             CurrentRoom = room;
         }
 

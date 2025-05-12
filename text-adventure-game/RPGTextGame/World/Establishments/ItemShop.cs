@@ -1,12 +1,15 @@
 using EntityPlayer;
 using Items;
+using System.Text.Json.Serialization;
 
 namespace World
 {
     class ItemShop
     {
-        private readonly Player player;
+        public int Id { get; set; }
+        public Player player;
 
+        [JsonIgnore]
         List<Item> itens = new List<Item>()
             {
                 new Weapon("Espada curta", 1, 6, 30, "Uma espada enferrujada, barata e nada potente, mas dá pro gasto."),
@@ -32,7 +35,22 @@ namespace World
                                    "Não subestime o poder dessa mistura, ela pode ser sua ultima esperança.\"", 5, 4, 8, 20)
             };
 
+        public ItemShop()
+        {
+            
+        }
+
         public ItemShop(Player player)
+        {
+            this.player = player;
+        }
+
+        public void SetId(int id)
+        {
+            Id = id;
+        }
+
+        public void SetPlayer(Player player)
         {
             this.player = player;
         }

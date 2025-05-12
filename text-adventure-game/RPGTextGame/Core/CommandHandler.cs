@@ -24,7 +24,7 @@ namespace Core
             this.shop = shop;
         }
 
-        public void Handle(string[] input)
+        public void Handle(string[] input, Game game)
         {
             if (input.Length == 0)
             {
@@ -60,7 +60,7 @@ namespace Core
                     Equipar(arg);
                     break;
                 case "status":
-                    Console.WriteLine(player);
+                    Console.WriteLine(game.State.PlayerData);
                     Console.ReadLine();
                     break;
                 case "inventario":
@@ -72,11 +72,20 @@ namespace Core
                 case "comprar":
                     Comprar(arg);
                     break;
+                case "sair":
+                    Quit(game);
+                    break;
                 default:
                     Console.WriteLine("Digite um comando válido");
                     Console.ReadLine();
                     break;
             }
+        }
+
+        private void Quit(Game game)
+        {
+            game.Save(game.State);
+            Environment.Exit(0);
         }
 
         private void Comprar(string? arg)

@@ -6,7 +6,7 @@ namespace Battle
 {
     class Encounter
     {
-        public static void FirstEncounter()
+        public static void FirstEncounter(Player player)
         {
             Console.WriteLine("Você leva a mão ao que sobrou da sua arma, mesmo sabendo que não faz diferença.");
             Console.WriteLine("O ser à sua frente não se move. Não precisa.");
@@ -16,7 +16,7 @@ namespace Battle
             Console.Clear();
             Enemy enemy = new Encapuzado();
             BattleManager.SetInCombat(true);
-            BattleManager.StartFight(Game.currentPlayer, enemy, true);
+            BattleManager.StartFight(player, enemy, true);
             BattleManager.SetInCombat(false);
         }
 
