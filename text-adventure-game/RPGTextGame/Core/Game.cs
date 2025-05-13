@@ -14,9 +14,9 @@ namespace Core
     class Game
     {
 
-        public static Player currentPlayer = new Player();
+        public static Player currentPlayer;
         public static Random GlobalRandom = new Random();
-        public ItemShop ItemShop = new ItemShop();
+        public ItemShop ItemShop;
         public GameState State = new GameState();
         public void Start()
         {
@@ -25,7 +25,6 @@ namespace Core
             List<Room> rooms = SetupWorld();
             currentPlayer = State.PlayerData;
             ItemShop = State.ShopData;
-            ItemShop.SetPlayer(currentPlayer);
             currentPlayer.inventory.SetPlayer(currentPlayer);
             Room loadedRoom = rooms.Find(r => r.Name == currentPlayer.CurrentRoomName);
 
@@ -52,7 +51,7 @@ namespace Core
                     if (currentPlayer.CurrentRoom == rooms.Find(r => r.Name == "Loja"))
                     {
                         Console.WriteLine();
-                        ItemShop.PrintShop();
+                        ItemShop.PrintShop(currentPlayer);
                     }
                     Console.WriteLine();
                     Console.Write("> ");
@@ -68,9 +67,10 @@ namespace Core
             Console.Clear();
             TextPrinter.Print("Insira seu nome: ", 50);
             currentPlayer = new Player(Console.ReadLine(), 30, 10);
-            ItemShop = new ItemShop(currentPlayer);
+            ItemShop = new ItemShop();
             currentPlayer.SetId(id);
             ItemShop.SetId(id);
+            ItemShop.SetList();
             State = new GameState()
             {
                 PlayerData = currentPlayer,

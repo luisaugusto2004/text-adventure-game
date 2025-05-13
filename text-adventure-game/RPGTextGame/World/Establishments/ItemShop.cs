@@ -1,5 +1,6 @@
 using EntityPlayer;
 using Items;
+using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 
 namespace World
@@ -7,10 +8,16 @@ namespace World
     class ItemShop
     {
         public int Id { get; set; }
-        public Player player;
+        public List<Item> Itens { get; private set; } = new List<Item>();           
 
-        [JsonIgnore]
-        List<Item> itens = new List<Item>()
+        public ItemShop()
+        {
+            
+        }
+
+        public void SetList()
+        {
+            Itens = new List<Item>()
             {
                 new Weapon("Espada curta", 1, 6, 30, "Uma espada enferrujada, barata e nada potente, mas dá pro gasto."),
 
@@ -34,15 +41,6 @@ namespace World
                 new ConsumableItem("Poção de cura +1", "\"Uma poção mais potente, feita para curar feridas profundas e restaurar vitalidade rapidamente. \n" +
                                    "Não subestime o poder dessa mistura, ela pode ser sua ultima esperança.\"", 5, 4, 8, 20)
             };
-
-        public ItemShop()
-        {
-            
-        }
-
-        public ItemShop(Player player)
-        {
-            this.player = player;
         }
 
         public void SetId(int id)
@@ -50,22 +48,17 @@ namespace World
             Id = id;
         }
 
-        public void SetPlayer(Player player)
+        public void PrintShop(Player player)
         {
-            this.player = player;
-        }
-
-        public void PrintShop()
-        {
-            Console.WriteLine("Bem-vindo à Loja! Aqui estão os itens disponíveis:");
+            Console.WriteLine("Bem-vindo à Loja! Aqui estão os Itens disponíveis:");
             Console.WriteLine("════════════════════════════════════════════");
             Console.WriteLine("{0,-30} {1,12}", "Item", "Preço (PO)");
             Console.WriteLine("════════════════════════════════════════════");
 
-            for (int i = 0; i < itens.Count; i++)
+            for (int i = 0; i < Itens.Count; i++)
             {
-                string itemName = itens[i].Name;
-                int price = itens[i].Price;
+                string itemName = Itens[i].Name;
+                int price = Itens[i].Price;
 
                 Console.WriteLine("{0,-30} {1,9} PO", $"[{i + 1}] {itemName}", price);
             }
@@ -75,7 +68,7 @@ namespace World
             Console.WriteLine("Digite \"comprar <numero do item que deseja comprar>\"");
         }
 
-        public void ProcessPurchase(string? arg)
+        public void ProcessPurchase(Player player, string? arg)
         {
             if (!int.TryParse(arg, out int escolha))
             {
@@ -85,13 +78,13 @@ namespace World
 
             int index = escolha - 1;
 
-            if (index < 0 || index >= itens.Count)
+            if (index < 0 || index >= Itens.Count)
             {
                 Console.WriteLine("Escreva um valor válido");
                 return;
             }
 
-            Item itemSelecionado = itens[index];
+            Item itemSelecionado = Itens[index];
 
             if (!player.CanBuy(itemSelecionado))
             {
@@ -108,7 +101,7 @@ namespace World
             else
             {
                 player.AddItem(itemSelecionado);
-                itens.Remove(itemSelecionado);
+                Itens.Remove(itemSelecionado);
             }
 
             Console.WriteLine($"Você comprou {itemSelecionado.Name}");

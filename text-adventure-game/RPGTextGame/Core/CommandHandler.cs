@@ -97,7 +97,7 @@ namespace Core
                 return;
             }
 
-            shop.ProcessPurchase(arg);
+            shop.ProcessPurchase(player ,arg);
             Console.ReadLine();
         }
 
