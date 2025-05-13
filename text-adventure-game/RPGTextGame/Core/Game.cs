@@ -14,9 +14,9 @@ namespace Core
     class Game
     {
 
-        public static Player currentPlayer;
+        public Player currentPlayer = new Player();
         public static Random GlobalRandom = new Random();
-        public ItemShop ItemShop;
+        public ItemShop ItemShop = new ItemShop();
         public GameState State = new GameState();
         public void Start()
         {
@@ -26,15 +26,15 @@ namespace Core
             currentPlayer = State.PlayerData;
             ItemShop = State.ShopData;
             currentPlayer.inventory.SetPlayer(currentPlayer);
-            Room loadedRoom = rooms.Find(r => r.Name == currentPlayer.CurrentRoomName);
+            Room loadedRoom = rooms.FirstOrDefault(r => r.Name == currentPlayer.CurrentRoomName);
 
             if (loadedRoom != null)
             {
-                currentPlayer.SetRoom(rooms.Find(r => r.Name == currentPlayer.CurrentRoomName));
+                currentPlayer.SetRoom(rooms.FirstOrDefault(r => r.Name == currentPlayer.CurrentRoomName));
             }
             else
             {
-                currentPlayer.SetRoom(rooms.Find(r => r.Name == "Cemitério"));
+                currentPlayer.SetRoom(rooms.FirstOrDefault(r => r.Name == "Cemitério"));
             }
 
             CommandHandler handler = new CommandHandler(currentPlayer, ItemShop);
@@ -48,7 +48,7 @@ namespace Core
                     Console.Write("Sala atual: ");
                     Console.WriteLine(currentPlayer.CurrentRoom.Name);
                     PrintCurrentExits(currentPlayer.CurrentRoom);
-                    if (currentPlayer.CurrentRoom == rooms.Find(r => r.Name == "Loja"))
+                    if (currentPlayer.CurrentRoom == rooms.FirstOrDefault(r => r.Name == "Loja"))
                     {
                         Console.WriteLine();
                         ItemShop.PrintShop(currentPlayer);
@@ -180,9 +180,13 @@ namespace Core
             {
                 Directory.CreateDirectory("saves");
             }
-            string[] paths = Directory.GetFiles("saves");
+
+            string[] paths = Directory.GetFiles("saves", "*.json");
+
             List<GameState> saves = new List<GameState>();
+
             int idCount = 0;
+
             foreach (string p in paths)
             {
                 var settings = new JsonSerializerSettings
@@ -201,62 +205,59 @@ namespace Core
 
             idCount = saves.Count;
             string[] data;
+
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("Escolha seu jogador: ");
-
+                Console.WriteLine("Jogadores encontrados: ");
+                
                 foreach (var state in saves)
                 {
                     Console.WriteLine(state.PlayerData.Id + ": " + state.PlayerData.Name);
                 }
-                Console.WriteLine("Por favor, escreva o id ou o nome do jogador que deseja carregar(id:<id> ou <nome do jogador>)");
-                data = Console.ReadLine().Split(':', StringSplitOptions.RemoveEmptyEntries);
+                Console.WriteLine();
+                Console.WriteLine("Digite 'id:<id>' ou '<nome do jogador>' para carregar, ou 'criar' para um novo jogador.");
+                Console.Write("> ");
+
                 try
                 {
-                    if (data[0] == "create")
+                    data = Console.ReadLine().Split(':', StringSplitOptions.RemoveEmptyEntries);
+                    if (data[0] == "criar")
                     {
                         NewGame(idCount);
                         return State;
                     }
-                    else if (data[0] == "id")
+
+                    GameState save = data[0] == "id"
+                        ? FindSaveById(int.Parse(data[1]), saves)
+                        : FindSaveByName(data[0], saves);
+
+                    if(save != null)
                     {
-                        if (int.TryParse(data[1], out int Id))
-                        {
-                            foreach (GameState state in saves)
-                            {
-                                if (state.PlayerData.Id == Id)
-                                {
-                                    return state;
-                                }
-                            }
-                            Console.WriteLine("Não tem jogadores com esse Id");
-                            Console.ReadKey();
-                        }
-                        else
-                        {
-                            Console.WriteLine("Seu Id precisa ser um número! Pressione qualquer tecla para continuar");
-                        }
+                        return save;
                     }
-                    else
-                    {
-                        foreach (var state in saves)
-                        {
-                            if (state.PlayerData.Name == data[0])
-                            {
-                                return state;
-                            }
-                        }
-                        Console.WriteLine("Não tem jogador com esse nome!");
-                        Console.ReadKey();
-                    }
+
+                    Console.WriteLine("Jogador não encontrado! Pressione qualquer tecla para continuar.");
+                    Console.ReadKey();
+                    continue;
                 }
                 catch (IndexOutOfRangeException)
                 {
-                    Console.WriteLine("Seu Id precisa ser um número! Pressione qualquer tecla para continuar");
+                    Console.WriteLine("Digite um id existente! Pressione qualquer tecla para continuar");
                     Console.ReadKey();
                 }
+
             }
+        }
+
+        private GameState FindSaveById(int id, List<GameState> saves)
+        {
+            return saves.FirstOrDefault(save => save.PlayerData.Id == id);
+        }
+
+        private GameState FindSaveByName(string name, List<GameState> saves)
+        {
+            return saves.FirstOrDefault(save => save.PlayerData.Name == name);
         }
     }
 }

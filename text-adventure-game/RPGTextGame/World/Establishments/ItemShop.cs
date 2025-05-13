@@ -19,7 +19,7 @@ namespace World
         {
             Itens = new List<Item>()
             {
-                new Weapon("Espada curta", 1, 6, 30, "Uma espada enferrujada, barata e nada potente, mas dá pro gasto."),
+                new Weapon("Espada curta", 1, 8, 30, "Uma espada enferrujada, barata e nada potente, mas dá pro gasto."),
 
                 new Armor("Armadura incompleta", "Um bracelete de couro para o braço esquerdo, um colete alcochoado e duas ombreiras, é tudo o que você precisa", 4, 30),
 
@@ -28,13 +28,13 @@ namespace World
                 new Armor("Colete de Couro Reforçado", "Feito para suportar o que vier, com couro endurecido e um toque de perigo.\n" +
                                                        " Não é perfeito, mas com certeza vai manter você inteiro.", 10, 100),
 
-                new Weapon("Motosserra", 10, 8, 300, "Essa relíquia banhada em sangue já enfrentou horrores que fariam o próprio inferno tremer. \n" +
+                new Weapon("Motosserra", 10, 8, 500, "Essa relíquia banhada em sangue já enfrentou horrores que fariam o próprio inferno tremer. \n" +
                                                       "Antiga companheira de um homem que trocou a mão por uma promessa de carnificina. Barulhenta, brutal e absurdamente eficaz. \n" +
                                                       "Se alguém te perguntar por que ela está sempre suja, apenas responda: 'Foi um fim de semana difícil.'"),
 
                 new Armor("Sobretudo do Caleb", "Um sobretudo negro como a noite, desgastado pelo tempo e encharcado de histórias. \n" +
                           "Exala um cheiro de pólvora, cinzas e vingança. Ao vesti-lo, você sente a presença de algo antigo... e perigoso. Estilo impecável. Proteção inigualável. \n" +
-                          "\"A bala pode até acertar, mas não atravessa atitude.\"", 50, 300),
+                          "\"A bala pode até acertar, mas não atravessa atitude.\"", 50, 500),
 
                 new ConsumableItem("Poção de cura", "\"Uma mistura simples, mas eficaz. Quando a vida te escapa, ela te traz de volta. Beba e sinta a dor desaparecer, por um tempo...\"", 4, 4, 4, 10),
 
