@@ -76,7 +76,6 @@ namespace Core
                 PlayerData = currentPlayer,
                 ShopData = ItemShop,
                 StartTime = DateTime.Now,
-                SaveTime = DateTime.Now,
                 TotalPlayTime = TimeSpan.Zero
             };
             ScriptManager.ScriptedIntroScene(State.PlayerData);
@@ -155,9 +154,10 @@ namespace Core
         public void Save(GameState state)
         {
             state.SaveTime = DateTime.Now;
-            state.TotalPlayTime = DateTime.Now - State.StartTime;
+            state.TotalPlayTime += DateTime.Now - State.StartTime;
             state.PlayerData = currentPlayer;
             state.ShopData = ItemShop;
+
             if (!Directory.Exists("saves"))
             {
                 Directory.CreateDirectory("saves");
@@ -168,7 +168,7 @@ namespace Core
                 Formatting = Formatting.Indented,
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             };
-            state.SaveTime = DateTime.Now;
+
             string jsonStringPlayer = JsonConvert.SerializeObject(state, settings);
             File.WriteAllText(SaveFileName(), jsonStringPlayer);
         }
@@ -213,9 +213,11 @@ namespace Core
                 
                 foreach (var state in saves)
                 {
-                    Console.WriteLine(state.PlayerData.Id + ": " + state.PlayerData.Name);
+                    string? totalPlayTime = state.TotalPlayTime.Days > 0 ? state.TotalPlayTime.ToString(@"dd\.hh\:mm\:ss") : state.TotalPlayTime.ToString(@"hh\:mm\:ss");
+                    Console.WriteLine($"{state.PlayerData.Id}: {state.PlayerData.Name}, Tempo de jogo: {totalPlayTime}");
+                    Console.WriteLine($"Último save em: {state.SaveTime}");
+                    Console.WriteLine();
                 }
-                Console.WriteLine();
                 Console.WriteLine("Digite 'id:<id>' ou '<nome do jogador>' para carregar, ou 'criar' para um novo jogador.");
                 Console.Write("> ");
 
@@ -234,6 +236,7 @@ namespace Core
 
                     if(save != null)
                     {
+                        save.StartTime = DateTime.Now;
                         return save;
                     }
 
