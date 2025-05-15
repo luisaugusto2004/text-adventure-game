@@ -84,7 +84,7 @@ namespace Core
 
         private void Quit(Game game)
         {
-            game.Save(game.State);
+            game.SaveGame();
             Environment.Exit(0);
         }
 
@@ -149,6 +149,7 @@ namespace Core
 
         private void Examinar(string? arg)
         {
+            // TODO: Fazer um sistema de examinar decente, que dê pra examinar tudo que está no inventário
             if (string.IsNullOrWhiteSpace(arg))
             {
                 Console.WriteLine("Digite o que quer examinar");
