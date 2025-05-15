@@ -147,7 +147,7 @@ namespace Core
 
         public string SaveFileName()
         {
-            string fileName = "saves/" + State.PlayerData.Id.ToString() + ".json";
+            string fileName = $"saves/player_{State.PlayerData.Id.ToString()}.json";
             return fileName;
         }
 
@@ -170,7 +170,22 @@ namespace Core
             };
 
             string jsonStringPlayer = JsonConvert.SerializeObject(state, settings);
+            string hash = TextUtils.GenerateHash(jsonStringPlayer);
+
             File.WriteAllText(SaveFileName(), jsonStringPlayer);
+            File.WriteAllText(SaveFileName() + ".hash", hash);
+        }
+
+        private bool IsSaveFileValid(string jsonPath)
+        {
+            string hashPath = jsonPath + ".hash";
+            if (!File.Exists(hashPath)) return false;
+
+            string json = File.ReadAllText(jsonPath);
+            string storedHash = File.ReadAllText(hashPath);
+            string computedHash = TextUtils.GenerateHash(json);
+
+            return storedHash == computedHash;
         }
 
         public GameState Load()
@@ -183,9 +198,12 @@ namespace Core
 
             string[] paths = Directory.GetFiles("saves", "*.json");
 
+            List<string> corruptedFiles = new List<string>();
             List<GameState> saves = new List<GameState>();
 
             int idCount = 0;
+            int corruptedSaves = 0;
+            FileInfo fileInfo;
 
             foreach (string p in paths)
             {
@@ -194,23 +212,58 @@ namespace Core
                     TypeNameHandling = TypeNameHandling.All
                 };
 
-                string json = File.ReadAllText(p);
-
-                GameState? state = JsonConvert.DeserializeObject<GameState>(json, settings);
-                if (state != null)
+                try
                 {
-                    saves.Add(state);
+                    string jsonStringPlayer = File.ReadAllText(p);
+
+                    if (!IsSaveFileValid(p))
+                    {
+                        corruptedFiles.Add(p);
+                        corruptedSaves++;
+                        continue;
+                    }
+
+                    GameState? state = JsonConvert.DeserializeObject<GameState>(jsonStringPlayer, settings);
+
+                    if (state != null)
+                    {
+                        saves.Add(state);
+                    }
+                }
+                catch(JsonSerializationException e)
+                {
+                    Console.WriteLine($"Erro ao deserializar o arquivo: {p}");
+                    Console.WriteLine(e.Message);
+                    corruptedFiles.Add(p);
+                    corruptedSaves++;
+                    continue;
+                }
+                catch (IOException e)
+                {
+                    Console.WriteLine($"Erro ao ler o arquivo: {p}");
+                    Console.WriteLine(e.Message);
+                    corruptedFiles.Add(p);
+                    corruptedSaves++;
+                    continue;
                 }
             }
 
-            idCount = saves.Count;
+            idCount = saves.Count + corruptedSaves;
             string[] data;
-
             while (true)
             {
-                Console.Clear();
+                if(corruptedFiles.Count > 0)
+                {
+                    Console.WriteLine("Os seguintes arquivos estão corrompidos: ");
+                    foreach (var corrupted in corruptedFiles)
+                    {
+                        fileInfo = new FileInfo(corrupted);
+                        Console.WriteLine($" - {fileInfo.Name}");
+                    }
+                }
+                Console.WriteLine();
                 Console.WriteLine("Jogadores encontrados: ");
-                
+
                 foreach (var state in saves)
                 {
                     string? totalPlayTime = state.TotalPlayTime.Days > 0 ? state.TotalPlayTime.ToString(@"dd\.hh\:mm\:ss") : state.TotalPlayTime.ToString(@"hh\:mm\:ss");
@@ -224,6 +277,7 @@ namespace Core
                 try
                 {
                     data = Console.ReadLine().Split(':', StringSplitOptions.RemoveEmptyEntries);
+
                     if (data[0] == "criar")
                     {
                         NewGame(idCount);
@@ -234,7 +288,7 @@ namespace Core
                         ? FindSaveById(int.Parse(data[1]), saves)
                         : FindSaveByName(data[0], saves);
 
-                    if(save != null)
+                    if (save != null)
                     {
                         save.StartTime = DateTime.Now;
                         return save;
@@ -242,12 +296,20 @@ namespace Core
 
                     Console.WriteLine("Jogador não encontrado! Pressione qualquer tecla para continuar.");
                     Console.ReadKey();
+                    Console.Clear();
                     continue;
                 }
                 catch (IndexOutOfRangeException)
                 {
                     Console.WriteLine("Digite um id existente! Pressione qualquer tecla para continuar");
                     Console.ReadKey();
+                    Console.Clear();
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Formato de ID inválido. Digite 'id:<número>'! Pressione qualquer tecla para continuar.");
+                    Console.ReadKey();
+                    Console.Clear();
                 }
 
             }
