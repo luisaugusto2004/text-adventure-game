@@ -25,11 +25,11 @@ namespace text_adventure_game.Test
             room1.SetExits(room1Exits);
             room2.SetExits(room2Exits);
             player.SetRoom(room1);
-
+            Game game = new Game();
             //Act
             string[] input = { "deslocar", "room2"};
             CommandHandler handler = new CommandHandler(player);
-            handler.Handle(input);
+            handler.Handle(input, game);
 
             //Assert
             Assert.Equal(room2, player.CurrentRoom);
@@ -53,11 +53,11 @@ namespace text_adventure_game.Test
             room1.SetExits(room1Exits);
             room2.SetExits(room2Exits);
             player.SetRoom(room1);
-
+            Game game = new Game();
             //Act
             string[] input = { "deslocar", "room3" };
             CommandHandler handler = new CommandHandler(player);
-            handler.Handle(input);
+            handler.Handle(input, game);
             
             //Assert
             Assert.Equal(room1, player.CurrentRoom);

@@ -276,7 +276,7 @@ namespace EntityPlayer
             sb.AppendLine($"Força: {Strength}");
             sb.AppendLine($"Gold: {Coins}");
             sb.AppendLine($"Experiência: {Experience}/{RequiredExperience}");
-            string equippedW = EquippedWeapon == DefaultWeapon ? EquippedWeapon.Name + " (+0)" : $"{EquippedWeapon.Name} (+{EquippedWeapon.Rolls}d{EquippedWeapon.Face})";
+            string equippedW = $"{EquippedWeapon.Name} (+{EquippedWeapon.Rolls}d{EquippedWeapon.Face})";
             sb.AppendLine($"Arma equipada: {equippedW}");
             sb.AppendLine($"Armadura equipada: {EquippedArmor.Name} (+{EquippedArmor.DefenseAmount})");
             return sb.ToString();

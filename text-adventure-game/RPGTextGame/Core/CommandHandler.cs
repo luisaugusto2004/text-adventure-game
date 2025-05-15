@@ -1,4 +1,6 @@
-﻿using Battle;
+﻿//#define DEBUG_MODE
+
+using Battle;
 using EntityPlayer;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -48,7 +50,11 @@ namespace Core
             switch (command)
             {
                 case "deslocar":
+                #if DEBUG_MODE
+                    Deslocar(arg, true);
+                #else
                     Deslocar(arg);
+                #endif
                     break;
                 case "lutar":
                     Lutar();
@@ -97,7 +103,7 @@ namespace Core
                 return;
             }
 
-            shop.ProcessPurchase(player ,arg);
+            shop.ProcessPurchase(player, arg);
             Console.ReadLine();
         }
 
@@ -190,12 +196,13 @@ namespace Core
             }
         }
 
-        private void Deslocar(string? arg)
+        private void Deslocar(string? arg, bool isTest = false)
         {
             if (string.IsNullOrWhiteSpace(arg))
             {
                 Console.WriteLine("Digite para onde quer ir");
-                Console.ReadLine();
+                if (!isTest)
+                    Console.ReadLine();
                 return;
             }
 
@@ -209,7 +216,8 @@ namespace Core
             {
                 Console.WriteLine("Modo de usar: deslocar <saida>");
             }
-            Console.ReadLine();
+            if (!isTest)
+                Console.ReadLine();
         }
     }
 }

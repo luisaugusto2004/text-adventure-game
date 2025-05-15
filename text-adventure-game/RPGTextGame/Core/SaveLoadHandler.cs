@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿//#define DEBUG_INPUT
+
+using Newtonsoft.Json;
 using States;
 using Util;
 
@@ -49,9 +51,10 @@ namespace Core
             return storedHash == computedHash;
         }
 
-        public GameState Load(Game game)
+        public GameState Load(Game game, bool isTest = false)
         {
-            Console.Clear();
+            if (!isTest)
+                Console.Clear();
             if (!Directory.Exists("saves"))
             {
                 Directory.CreateDirectory("saves");
@@ -110,6 +113,7 @@ namespace Core
             }
 
             idCount = saves.Count + corruptedSaves;
+
             string[] data;
 
             while (true)
@@ -121,9 +125,9 @@ namespace Core
                     {
                         fileInfo = new FileInfo(corrupted);
                         Console.WriteLine($" - {fileInfo.Name}");
+                        Console.WriteLine();
                     }
                 }
-                Console.WriteLine();
                 Console.WriteLine("Jogadores encontrados: ");
 
                 foreach (var state in saves)
@@ -138,7 +142,12 @@ namespace Core
 
                 try
                 {
-                    data = Console.ReadLine().Split(':', StringSplitOptions.RemoveEmptyEntries);
+                    #if DEBUG_INPUT
+                        data = "id:998".Split(":", StringSplitOptions.RemoveEmptyEntries);
+                        Console.WriteLine($"[DEBUG] Usando entrada de teste: {string.Join(":", data)}");
+                    #else
+                        data = Console.ReadLine().Split(':', StringSplitOptions.RemoveEmptyEntries);
+                    #endif
 
                     if (data[0] == "criar")
                     {
@@ -157,28 +166,31 @@ namespace Core
 
                     Console.WriteLine("Jogador não encontrado! Pressione qualquer tecla para continuar.");
                     Console.ReadKey();
-                    Console.Clear();
+                    if (!isTest)
+                        Console.Clear();
                     continue;
                 }
                 catch (IndexOutOfRangeException)
                 {
                     Console.WriteLine("Digite um id existente! Pressione qualquer tecla para continuar");
                     Console.ReadKey();
-                    Console.Clear();
+                    if (!isTest)
+                        Console.Clear();
                 }
                 catch (FormatException)
                 {
                     Console.WriteLine("Formato de ID inválido. Digite 'id:<número>'! Pressione qualquer tecla para continuar.");
                     Console.ReadKey();
-                    Console.Clear();
+                    if (!isTest)
+                        Console.Clear();
                 }
                 catch (OverflowException)
                 {
                     Console.WriteLine("Este número é muito grande para ter um jogador! Pressione qualquer tecla para continuar");
                     Console.ReadKey();
-                    Console.Clear();
+                    if (!isTest)
+                        Console.Clear();
                 }
-
             }
         }
 
