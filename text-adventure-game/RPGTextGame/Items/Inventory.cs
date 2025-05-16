@@ -4,11 +4,17 @@ namespace Items
 {
     class Inventory
     {
-        public List<Item> Itens { get; private set; }
+        public List<Item> Itens { get; set; } = new List<Item>();
+        public Player player;
 
         public Inventory()
         {
-            Itens = new List<Item>();
+            
+        }
+
+        public void SetPlayer(Player player)
+        {
+            this.player = player;
         }
 
         public void AddItem(Item item)

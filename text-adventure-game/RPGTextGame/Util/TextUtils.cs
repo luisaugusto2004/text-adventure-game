@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Util
@@ -21,6 +22,15 @@ namespace Util
             }
 
             return sb.ToString().Normalize(NormalizationForm.FormC);
+        }
+        public static string GenerateHash(string json)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(json);
+                byte[] hash = sha256.ComputeHash(bytes);
+                return Convert.ToBase64String(hash);
+            }
         }
     }
 }

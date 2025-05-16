@@ -1,12 +1,14 @@
 ﻿using Core;
+using EntityPlayer;
 using Util;
 
 namespace Scripts
 {
     class ScriptManager
     {
-        public static void ScriptedIntroScene()
+        public static void ScriptedIntroScene(Player player)
         {
+            Console.Clear();
             TextPrinter.Print($"Essa é a história da sua morte", 25);
             Console.ReadLine();
             Console.Clear();
@@ -16,10 +18,10 @@ namespace Scripts
             TextPrinter.Print("Você vai encontrar coisas tão fodidas que a situação global atual vai parecer perfeitamente sensata em comparação.", 25);
             Console.ReadLine();
             Console.Clear();
-            if (Game.currentPlayer.Name == "")
+            if (player.Name == "")
                 TextPrinter.Print("Viver ou morrer, a escolha é sua, estranho.", 100);
             else
-                TextPrinter.Print($"Viver ou morrer, a escolha é sua, {Game.currentPlayer.Name}", 100);
+                TextPrinter.Print($"Viver ou morrer, a escolha é sua, {player.Name}", 100);
             Console.ReadLine();
             Console.Clear();
             Console.WriteLine("Você ouve seu coração batendo mais que tudo");

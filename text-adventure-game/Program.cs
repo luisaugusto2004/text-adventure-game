@@ -6,6 +6,7 @@ namespace text_adventure_game
     {
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             Game game = new Game();
             game.Start();     
         }

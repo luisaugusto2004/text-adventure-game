@@ -4,7 +4,7 @@ namespace Enemies
 {
     class BustoDeZumbi : Enemy
     {
-        public BustoDeZumbi() : base("Busto de Zumbi", 13, 3, 1, 4, 6, 13) { }
+        public BustoDeZumbi() : base("Busto de Zumbi", 13, 2, 1, 4, 6, 13) { }
 
         public override void Attack(Player player, Random random)
         {

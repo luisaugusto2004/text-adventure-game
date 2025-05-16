@@ -1,4 +1,6 @@
-﻿namespace World
+﻿using System.Text.Json.Serialization;
+
+namespace World
 {
     class Room
     {
@@ -7,13 +9,17 @@
         public Dictionary<string, Room> Exits { get; private set; }
         public bool IsHostile { get; private set; }
 
+        public Room()
+        {
+            
+        }
         public Room(string name, string description, bool isHostile = false)
         {
             Name = name;
             Description = description;
             IsHostile = isHostile;
         }
-
+        
         public Room(string name, string description, Dictionary<string, Room> exits, bool isHostile = false) 
         {
             Name = name;

@@ -1,4 +1,6 @@
-﻿using Battle;
+﻿//#define DEBUG_MODE
+
+using Battle;
 using EntityPlayer;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -24,7 +26,7 @@ namespace Core
             this.shop = shop;
         }
 
-        public void Handle(string[] input)
+        public void Handle(string[] input, Game game)
         {
             if (input.Length == 0)
             {
@@ -48,7 +50,11 @@ namespace Core
             switch (command)
             {
                 case "deslocar":
+                #if DEBUG_MODE
+                    Deslocar(arg, true);
+                #else
                     Deslocar(arg);
+                #endif
                     break;
                 case "lutar":
                     Lutar();
@@ -60,7 +66,7 @@ namespace Core
                     Equipar(arg);
                     break;
                 case "status":
-                    Console.WriteLine(player);
+                    Console.WriteLine(game.State.PlayerData);
                     Console.ReadLine();
                     break;
                 case "inventario":
@@ -72,11 +78,20 @@ namespace Core
                 case "comprar":
                     Comprar(arg);
                     break;
+                case "sair":
+                    Quit(game);
+                    break;
                 default:
                     Console.WriteLine("Digite um comando válido");
                     Console.ReadLine();
                     break;
             }
+        }
+
+        private void Quit(Game game)
+        {
+            game.SaveGame();
+            Environment.Exit(0);
         }
 
         private void Comprar(string? arg)
@@ -88,7 +103,7 @@ namespace Core
                 return;
             }
 
-            shop.ProcessPurchase(arg);
+            shop.ProcessPurchase(player, arg);
             Console.ReadLine();
         }
 
@@ -140,6 +155,7 @@ namespace Core
 
         private void Examinar(string? arg)
         {
+            // TODO: Fazer um sistema de examinar decente, que dê pra examinar tudo que está no inventário
             if (string.IsNullOrWhiteSpace(arg))
             {
                 Console.WriteLine("Digite o que quer examinar");
@@ -180,12 +196,13 @@ namespace Core
             }
         }
 
-        private void Deslocar(string? arg)
+        private void Deslocar(string? arg, bool isTest = false)
         {
             if (string.IsNullOrWhiteSpace(arg))
             {
                 Console.WriteLine("Digite para onde quer ir");
-                Console.ReadLine();
+                if (!isTest)
+                    Console.ReadLine();
                 return;
             }
 
@@ -199,7 +216,8 @@ namespace Core
             {
                 Console.WriteLine("Modo de usar: deslocar <saida>");
             }
-            Console.ReadLine();
+            if (!isTest)
+                Console.ReadLine();
         }
     }
 }
