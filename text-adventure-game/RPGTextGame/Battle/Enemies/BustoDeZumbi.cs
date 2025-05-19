@@ -6,7 +6,7 @@ namespace Enemies
     {
         public BustoDeZumbi() : base("Busto de Zumbi", 13, 2, 1, 4, 6, 13) { }
 
-        public override void Attack(Player player, Random random)
+        public override void Attack(Player player)
         {
             int damage = Strength + RollDamage() - player.Defense;
             damage = Math.Max(0, damage);

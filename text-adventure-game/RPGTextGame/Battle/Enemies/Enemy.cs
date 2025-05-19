@@ -38,7 +38,7 @@ namespace Enemies
             }
         }
 
-        public abstract void Attack(Player player, Random random);
+        public abstract void Attack(Player player);
 
         public int RollDamage()
         {

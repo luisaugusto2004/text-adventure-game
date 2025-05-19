@@ -6,7 +6,7 @@ namespace Enemies
     {
         public EsqueletoBruto() : base("Esqueleto", 26, 3, 1, 6, 8, 21) { }
 
-        public override void Attack(Player player, Random random)
+        public override void Attack(Player player)
         {
             int damage = Strength + RollDamage() - player.Defense;
             damage = Math.Max(0, damage);

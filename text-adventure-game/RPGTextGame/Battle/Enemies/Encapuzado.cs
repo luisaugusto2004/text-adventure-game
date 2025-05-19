@@ -8,7 +8,7 @@ namespace Enemies
 
         public Encapuzado() : base("Encapuzado", 1500, 50, 1, 50, 1000, 5001) { }
 
-        public override void Attack(Player player, Random random)
+        public override void Attack(Player player)
         {
             int damage = Strength + RollDamage() - player.Defense;
             damage = Math.Max(0, damage);

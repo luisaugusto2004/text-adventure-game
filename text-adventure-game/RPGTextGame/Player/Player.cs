@@ -4,6 +4,7 @@ using Items;
 using World;
 using Util;
 using System.Text.Json.Serialization;
+using System.Security.Cryptography;
 
 namespace EntityPlayer
 {
@@ -153,7 +154,7 @@ namespace EntityPlayer
             Strength += 5;
         }
 
-        public void Attack(Enemy monster, Random random)
+        public void Attack(Enemy monster)
         {
             int attack = Strength + EquippedWeapon.RollDamage();
 
@@ -163,7 +164,7 @@ namespace EntityPlayer
 
             if (!monster.IsAlive)
             {
-                int goldAmount = random.Next(4, monster.MaxGold);
+                int goldAmount = RandomNumberGenerator.GetInt32(4, monster.MaxGold);
                 Console.WriteLine($"{monster.Name} derrotado!");
                 Console.WriteLine($"{monster.Name} dropou {goldAmount} PO!");
                 Console.WriteLine($"Você recebeu {monster.ExperienceGain} XP!");

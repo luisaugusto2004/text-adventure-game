@@ -1,6 +1,7 @@
 ﻿using Core;
 using Enemies;
 using EntityPlayer;
+using System.Security.Cryptography;
 
 namespace Battle
 {
@@ -25,7 +26,7 @@ namespace Battle
             if (player.CurrentRoom.IsHostile)
             {
                 Console.Clear();
-                var enemy = GenerateEnemy(Game.GlobalRandom);
+                var enemy = GenerateEnemy();
                 
                 BattleManager.StartFight(player, enemy);
             }
@@ -36,14 +37,12 @@ namespace Battle
             }
         }
 
-        public static Enemy GenerateEnemy(Random random)
+        public static Enemy GenerateEnemy()
         {
-            int roll = random.Next(1, 4);
+            int roll = RandomNumberGenerator.GetInt32(1, 4);
             switch (roll)
             {
                 case 1:
-                    ShowEncounter("A wild Zombie appears!");
-                    return new BustoDeZumbi();
                 case 2:
                     ShowEncounter("A wild Zombie appears!");
                     return new BustoDeZumbi();
@@ -51,6 +50,7 @@ namespace Battle
                     ShowEncounter("A wild Skeleton appears!");
                     return new EsqueletoBruto();
                 default:
+                    ShowEncounter("A mysterious enemy appears!");
                     return new BustoDeZumbi();
             }
         }

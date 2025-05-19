@@ -3,6 +3,7 @@ using Enemies;
 using Util;
 using Core;
 using Scripts;
+using System.Security.Cryptography;
 
 namespace Battle
 {
@@ -71,7 +72,7 @@ namespace Battle
             }
             else if (input == "a")
             {
-                player.Attack(monster, Game.GlobalRandom);
+                player.Attack(monster);
                 if (monster.Name.ToLower() == "encapuzado" && !monster.IsAlive)
                 {
                     Console.Clear();
@@ -103,7 +104,7 @@ namespace Battle
                 Console.ReadLine();
                 // Tenta fugir da batalha com 50% de chance de sucesso.
                 // Futuramente, considerar usar um atributo de agilidade para influenciar essa chance.
-                if (Game.GlobalRandom.Next(2) == 0)
+                if (RandomNumberGenerator.GetInt32(2) == 0)
                 {
                     Console.WriteLine("Falha. Você fica aberto para um ataque.");
                     Console.ReadLine();
@@ -127,7 +128,7 @@ namespace Battle
 
             if (EncapuzadoFirstTurns(player, monster)) return;
             turns++;
-            monster.Attack(player, Game.GlobalRandom);
+            monster.Attack(player);
             Console.ReadLine();
         }
 

@@ -1,4 +1,5 @@
 ﻿using Core;
+using System.Security.Cryptography;
 
 namespace Util
 {
@@ -9,7 +10,7 @@ namespace Util
             List<int> values = new List<int>(); 
             for (int i = 0; i < rolls; i++)
             {
-                int dice_roll = Game.GlobalRandom.Next(1, faces + 1);
+                int dice_roll = RandomNumberGenerator.GetInt32(1, faces + 1);
                 values.Add(dice_roll);
             }
 
