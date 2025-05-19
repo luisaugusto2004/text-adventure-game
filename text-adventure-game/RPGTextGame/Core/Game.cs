@@ -12,30 +12,22 @@ namespace Core
     {
 
         public Player currentPlayer = new Player();
-        public static Random GlobalRandom = new Random();
         public ItemShop ItemShop = new ItemShop();
         public GameState State = new GameState();
         public SaveLoadHandler Handler = new SaveLoadHandler();
+        public List<Room> Rooms = new List<Room>();
         public void Start()
         {
             State = Handler.Load(this);
-
-            List<Room> rooms = SetupWorld();
+            Rooms = SetupWorld();
             currentPlayer = State.PlayerData;
             ItemShop = State.ShopData;
             currentPlayer.inventory.SetPlayer(currentPlayer);
-            Room loadedRoom = rooms.FirstOrDefault(r => r.Name == currentPlayer.CurrentRoomName);
+            Room loadedRoom = Rooms.FirstOrDefault(r => r.Name == currentPlayer.CurrentRoomName);
 
-            if (loadedRoom != null)
-            {
-                currentPlayer.SetRoom(rooms.FirstOrDefault(r => r.Name == currentPlayer.CurrentRoomName));
-            }
-            else
-            {
-                currentPlayer.SetRoom(rooms.FirstOrDefault(r => r.Name == "Cemitério"));
-            }
+            SetCurrentRoom(Rooms, loadedRoom);
 
-            CommandHandler handler = new CommandHandler(currentPlayer, ItemShop);
+            CommandHandler handler = new CommandHandler(this, currentPlayer, ItemShop);
 
             while (true)
             {
@@ -46,7 +38,7 @@ namespace Core
                     Console.Write("Sala atual: ");
                     Console.WriteLine(currentPlayer.CurrentRoom.Name);
                     PrintCurrentExits(currentPlayer.CurrentRoom);
-                    if (currentPlayer.CurrentRoom == rooms.FirstOrDefault(r => r.Name == "Loja"))
+                    if (currentPlayer.CurrentRoom == Rooms.FirstOrDefault(r => r.Name == "Loja"))
                     {
                         Console.WriteLine();
                         ItemShop.PrintShop(currentPlayer);
@@ -58,6 +50,23 @@ namespace Core
                     Console.Clear();
                 }
             }
+        }
+
+        public void SetCurrentRoom(List<Room> rooms, Room loadedRoom)
+        {
+            if (loadedRoom != null)
+            {
+                currentPlayer.SetRoom(rooms.FirstOrDefault(r => r.Name == currentPlayer.CurrentRoomName));
+            }
+            else
+            {
+                currentPlayer.SetRoom(rooms.FirstOrDefault(r => r.Name == "Cemitério"));
+            }
+        }
+
+        public void SetDefaultRoomOnDeath()
+        {
+
         }
 
         public void SaveGame()
@@ -82,7 +91,7 @@ namespace Core
                 TotalPlayTime = TimeSpan.Zero
             };
             ScriptManager.ScriptedIntroScene(State.PlayerData);
-            Encounter.FirstEncounter(State.PlayerData);
+            Encounter.FirstEncounter(State.PlayerData, this);
             return State;
         }
 

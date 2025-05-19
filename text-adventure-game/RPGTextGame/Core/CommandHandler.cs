@@ -14,6 +14,7 @@ namespace Core
     {
         private readonly Player player;
         private readonly ItemShop shop;
+        private readonly Game game;
 
         public CommandHandler(Player player)
         {
@@ -22,6 +23,13 @@ namespace Core
 
         public CommandHandler(Player player, ItemShop shop)
         {
+            this.player = player;
+            this.shop = shop;
+        }
+
+        public CommandHandler(Game game, Player player, ItemShop shop)
+        {
+            this.game = game;
             this.player = player;
             this.shop = shop;
         }
@@ -185,9 +193,9 @@ namespace Core
         {
             if (player.CurrentRoom.IsHostile)
             {
-                BattleManager.SetInCombat(true);
+                BattleManager.SetFight();
                 while (BattleManager.GetInCombat())
-                    Encounter.RandomEncounter(player);
+                    Encounter.RandomEncounter(player, game);
             }
             else
             {

@@ -4,6 +4,7 @@ using Util;
 using Core;
 using Scripts;
 using System.Security.Cryptography;
+using World;
 
 namespace Battle
 {
@@ -12,17 +13,15 @@ namespace Battle
         private static int turns = 1;
         private static bool inCombat = false;
 
-        public static void StartFight(Player player, Enemy enemy, bool isScripted = false)
+        public static void StartFight(Game game, Player player, Enemy enemy, bool isScripted = false)
         {
-            turns = 1;
-            SetInCombat(true);
             while (player.IsAlive && enemy.IsAlive && GetInCombat())
             {
                 ShowBattleStatus(player, enemy);
                 Console.WriteLine();
                 PlayerTurn(player, enemy);
                 if (!GetInCombat())
-                    break;
+                    return;
                 if (CheckSecretEnding(enemy)) return;
                 Console.Clear();
                 ShowBattleStatus(player, enemy);
@@ -30,10 +29,31 @@ namespace Battle
                 if (!enemy.IsAlive)
                     return;
                 EnemyTurn(player, enemy);
-                if (HandlePlayerDefeatedByEncapuzado(player, enemy)) return;
-                // TODO: Implementar lógica quando o jogador morrer em encontros aleatórios.
                 Console.Clear();
+                if (HandlePlayerDefeatedByEncapuzado(player, enemy)) return;
+                if (HandlePlayerDeadToRandomEncounters(player, game)) EndFight();
             }
+        }
+
+        public static void SetFight()
+        {
+            SetInCombat(true);
+            turns = 1;
+        }
+
+        public static void EndFight()
+        {
+            SetInCombat(false);
+        }
+
+        private static bool HandlePlayerDeadToRandomEncounters(Player player, Game game)
+        {
+            if (!player.IsAlive)
+            {
+                RespawnManager.HandlePlayerDeath(player, game);
+                return true;
+            }
+            return false;
         }
 
         public static bool GetInCombat()
@@ -189,6 +209,7 @@ namespace Battle
         {
             if (enemy.Name.ToLower() == "encapuzado" && !player.IsAlive)
             {
+                SetInCombat(false);
                 player.Revive();
                 Console.Clear();
                 TextPrinter.Print("Você não tem nome aqui, Pereça.", 70);

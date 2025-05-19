@@ -7,7 +7,7 @@ namespace Battle
 {
     class Encounter
     {
-        public static void FirstEncounter(Player player)
+        public static void FirstEncounter(Player player, Game game)
         {
             Console.WriteLine("Você leva a mão ao que sobrou da sua arma, mesmo sabendo que não faz diferença.");
             Console.WriteLine("O ser à sua frente não se move. Não precisa.");
@@ -16,19 +16,18 @@ namespace Battle
             Console.ReadLine();
             Console.Clear();
             Enemy enemy = new Encapuzado();
-            BattleManager.SetInCombat(true);
-            BattleManager.StartFight(player, enemy, true);
-            BattleManager.SetInCombat(false);
+            BattleManager.SetFight();
+            BattleManager.StartFight(game, player, enemy, true);
         }
 
-        public static void RandomEncounter(Player player)
+        public static void RandomEncounter(Player player, Game game)
         {
             if (player.CurrentRoom.IsHostile)
             {
                 Console.Clear();
                 var enemy = GenerateEnemy();
-                
-                BattleManager.StartFight(player, enemy);
+
+                BattleManager.StartFight(game, player, enemy);
             }
             else
             {
