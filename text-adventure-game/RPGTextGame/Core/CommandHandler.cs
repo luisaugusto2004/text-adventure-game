@@ -2,6 +2,7 @@
 
 using Battle;
 using EntityPlayer;
+using Items;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Util;
@@ -33,7 +34,11 @@ namespace Core
             this.player = player;
             this.shop = shop;
         }
-
+        /// <summary>
+        /// Divide o comando bruto que o usuário digitou e realiza a ação correspondente
+        /// </summary>
+        /// <param name="input">Comando bruto digitado</param>
+        /// <param name="game">Instância atual do jogo usada para executar ações</param>
         public void Handle(string[] input, Game game)
         {
             if (input.Length == 0)
@@ -104,7 +109,7 @@ namespace Core
 
         private void Comprar(string? arg)
         {
-            if (string.IsNullOrEmpty(arg))
+            if (string.IsNullOrWhiteSpace(arg))
             {
                 Console.WriteLine("Digite o número do que você quer comprar");
                 Console.ReadLine();
@@ -163,7 +168,6 @@ namespace Core
 
         private void Examinar(string? arg)
         {
-            // TODO: Fazer um sistema de examinar decente, que dê pra examinar tudo que está no inventário
             if (string.IsNullOrWhiteSpace(arg))
             {
                 Console.WriteLine("Digite o que quer examinar");
@@ -172,21 +176,33 @@ namespace Core
             }
 
             string argSemAcento = TextUtils.RemoverAcentos(arg.ToLower());
-            string nomeArmaSemAcento = TextUtils.RemoverAcentos(player.EquippedWeapon.Name.ToLower());
 
             if (arg == "sala")
             {
                 Console.WriteLine(player.CurrentRoom.Description);
             }
-            else if (argSemAcento == nomeArmaSemAcento)
-            {
-                Console.WriteLine(player.EquippedWeapon.Description);
-            }
-            else
-            {
-                Console.WriteLine("Escolha algo válido para examinar");
-            }
+
+            if (TryShowItemDescription(player.inventory.Itens, argSemAcento)) return;
+
+            if (player.CurrentRoom.Name == "Loja" && TryShowItemDescription(shop.Itens, argSemAcento)) return;
+
+            Console.WriteLine("Escolha algo válido para examinar");
             Console.ReadLine();
+        }
+
+        bool TryShowItemDescription(IEnumerable<Item> itens, string arg)
+        {
+            foreach (var item in itens)
+            {
+                string nome = TextUtils.RemoverAcentos(item.Name.ToLower());
+                if (arg == nome)
+                {
+                    Console.WriteLine(item.Description);
+                    Console.ReadLine();
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void Lutar()

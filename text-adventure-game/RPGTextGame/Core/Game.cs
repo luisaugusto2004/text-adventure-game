@@ -64,11 +64,6 @@ namespace Core
             }
         }
 
-        public void SetDefaultRoomOnDeath()
-        {
-
-        }
-
         public void SaveGame()
         {
             Handler.Save(this, State);
