@@ -28,6 +28,12 @@ namespace Core
             this.shop = shop;
         }
 
+        public CommandHandler(Player player, Game game)
+        {
+            this.player = player;
+            this.game = game;
+        }
+
         public CommandHandler(Game game, Player player, ItemShop shop)
         {
             this.game = game;
@@ -39,7 +45,7 @@ namespace Core
         /// </summary>
         /// <param name="input">Comando bruto digitado</param>
         /// <param name="game">Instância atual do jogo usada para executar ações</param>
-        public void Handle(string[] input, Game game)
+        public void Handle(string[] input)
         {
             if (input.Length == 0)
             {
@@ -86,8 +92,13 @@ namespace Core
                     player.inventory.ListItens(player);
                     break;
                 case "usar":
+                #if DEBUG_MODE
+                    Usar(arg, true);
+                    break;
+                #else
                     Usar(arg);
                     break;
+                #endif
                 case "comprar":
                     Comprar(arg);
                     break;
@@ -120,13 +131,14 @@ namespace Core
             Console.ReadLine();
         }
 
-        private void Usar(string? arg)
+        private void Usar(string? arg, bool isTest = false)
         {
 
             if (string.IsNullOrWhiteSpace(arg))
             {
                 Console.WriteLine("Digite algo para usar");
-                Console.ReadLine();
+                if(!isTest)
+                    Console.ReadLine();
                 return;
             }
 
@@ -141,7 +153,8 @@ namespace Core
             {
                 Console.WriteLine("Você não tem esse item no inventario");
             }
-            Console.ReadLine();
+            if(!isTest)
+                Console.ReadLine();
         }
 
         private void Equipar(string? arg)
@@ -180,6 +193,7 @@ namespace Core
             if (arg == "sala")
             {
                 Console.WriteLine(player.CurrentRoom.Description);
+                return;
             }
 
             if (TryShowItemDescription(player.inventory.Itens, argSemAcento)) return;

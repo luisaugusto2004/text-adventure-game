@@ -4,6 +4,7 @@ using Scripts;
 using Battle;
 using World;
 using States;
+using System.Text;
 
 
 namespace Core
@@ -33,11 +34,10 @@ namespace Core
             {
                 while (!BattleManager.GetInCombat())
                 {
-                    // TODO: Fazer uma hud decente
+                    // TODO: Fazer uma hud decente                   
                     Console.Clear();
-                    Console.Write("Sala atual: ");
-                    Console.WriteLine(currentPlayer.CurrentRoom.Name);
-                    PrintCurrentExits(currentPlayer.CurrentRoom);
+                    ShowHud(currentPlayer, currentPlayer.CurrentRoom);
+
                     if (currentPlayer.CurrentRoom == Rooms.FirstOrDefault(r => r.Name == "Loja"))
                     {
                         Console.WriteLine();
@@ -46,7 +46,7 @@ namespace Core
                     Console.WriteLine();
                     Console.Write("> ");
                     string[] input = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                    handler.Handle(input, this);
+                    handler.Handle(input);
                     Console.Clear();
                 }
             }
@@ -143,14 +143,31 @@ namespace Core
             return rooms;
         }
 
-        private void PrintCurrentExits(Room room)
+        public string PrintCurrentExits(Room room)
         {
-            Console.WriteLine("Saidas atuais: ");
-            Console.WriteLine();
+            StringBuilder sb = new StringBuilder();
             foreach (var r in room.Exits)
             {
-                Console.WriteLine(r.Key);
+                sb.Append(r.Key + " │ ");
             }
+            sb.Remove(sb.ToString().Length - 2, 2);
+            return sb.ToString();
+        }
+
+        private void ShowHud(Player player, Room currentRoom)
+        {
+            const int boxWidth = 34;
+            string topBorder = "┌" + new string('─', boxWidth) + "┐";
+            string bottomBorder = "└" + new string('─', boxWidth) + "┘";
+            Console.WriteLine(topBorder);
+            Console.WriteLine("│" + TextUtils.CenterLeftText($"\U0001f9cd Jogador: {player.Name}", boxWidth) + "│");
+            Console.WriteLine("│" + TextUtils.CenterLeftText($"❤️ HP: {player.Health} / {player.MaxHealth}", boxWidth) + "│");
+            Console.WriteLine("│" + TextUtils.CenterLeftText($"💰 Gold: {player.Coins}", boxWidth) + "│");
+            Console.WriteLine("│" + TextUtils.CenterLeftText($"🗺️ Sala: {player.CurrentRoom.Name}", boxWidth) + " │");
+            Console.WriteLine("│" + new string(' ', boxWidth) + "│");
+            Console.Write("│" + TextUtils.CenterLeftText($"Saidas: {PrintCurrentExits(currentRoom)}" , boxWidth) + "│");
+            Console.WriteLine();
+            Console.WriteLine(bottomBorder);
         }
     }
 }

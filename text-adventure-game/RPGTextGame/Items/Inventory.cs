@@ -1,4 +1,5 @@
 ﻿using EntityPlayer;
+using Util;
 
 namespace Items
 {
@@ -43,12 +44,12 @@ namespace Items
             string bottomBorder = "╚" + new string('═', boxWidth) + "╝";
 
             Console.WriteLine(topBorder);
-            Console.WriteLine("║" + CenterText(title, boxWidth) + "║");
+            Console.WriteLine("║" + TextUtils.CenterText(title, boxWidth) + "║");
             Console.WriteLine(middleBorder);
 
             if (Itens.Count == 0)
             {
-                Console.WriteLine("║" + CenterText("(vazio)", boxWidth) + "║");
+                Console.WriteLine("║" + TextUtils.CenterText("(vazio)", boxWidth) + "║");
             }
             else
             {
@@ -73,22 +74,23 @@ namespace Items
                         displayText = $"{consumableItem.Name} ({consumableItem.Rolls}d{consumableItem.Face}+{consumableItem.BonusHeal} HP)";
                     }
                         
-                        Console.WriteLine("║" + CenterText(displayText, boxWidth) + "║");
+                        Console.WriteLine("║" + TextUtils.CenterText(displayText, boxWidth) + "║");
                 }
             }
             Console.WriteLine(bottomBorder);
             Console.ReadLine();
         }
 
-        private string CenterText(string text, int width)
+        public bool HasItem(string item)
         {
-            if (text.Length >= width)
-                return text.Substring(0, width);
-
-            int spaces = width - text.Length;
-            int left = spaces / 2;
-            int right = spaces - left;
-            return new string(' ', left) + text + new string(' ', right);
+            foreach(Item i in Itens)
+            {
+                if(i.Name == item)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

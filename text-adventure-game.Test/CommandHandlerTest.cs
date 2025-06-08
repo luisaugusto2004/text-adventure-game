@@ -28,8 +28,8 @@ namespace text_adventure_game.Test
             Game game = new Game();
             //Act
             string[] input = { "deslocar", "room2"};
-            CommandHandler handler = new CommandHandler(player);
-            handler.Handle(input, game);
+            CommandHandler handler = new CommandHandler(player, game);
+            handler.Handle(input);
 
             //Assert
             Assert.Equal(room2, player.CurrentRoom);
@@ -56,11 +56,27 @@ namespace text_adventure_game.Test
             Game game = new Game();
             //Act
             string[] input = { "deslocar", "room3" };
-            CommandHandler handler = new CommandHandler(player);
-            handler.Handle(input, game);
+            CommandHandler handler = new CommandHandler(player, game);
+            handler.Handle(input);
             
             //Assert
             Assert.Equal(room1, player.CurrentRoom);
+        }
+
+        [Fact]
+        public void UsaItem_ComItemNoInventario_ItemConsumido()
+        {
+            //Arrange
+            Player player = new Player("teste", 30, 10);
+            player.inventory.AddItem(new ConsumableItem("Pocao teste", "Descricao teste", 2, 8, 6, 20));
+
+            //Act   
+            string[] input = { "usar", "Pocao teste" };
+            CommandHandler handler = new CommandHandler(player);
+            handler.Handle(input);
+
+            //Assert
+            Assert.False(player.inventory.HasItem("Pocao teste"));
         }
     }
 }

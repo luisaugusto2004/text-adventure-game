@@ -32,5 +32,27 @@ namespace Util
                 return Convert.ToBase64String(hash);
             }
         }
+
+        public static string CenterText(string text, int width)
+        {
+            if (text.Length >= width)
+                return text.Substring(0, width);
+
+            int spaces = width - text.Length;
+            int left = spaces / 2;
+            int right = spaces - left;
+            return new string(' ', left) + text + new string(' ', right);
+        }
+
+        public static string CenterLeftText(string text, int width)
+        {
+            if (text.Length >= width)
+                return text.Substring(0, width);
+
+            int spaces = width - text.Length;
+            int left = 0;
+            int right = spaces - left;
+            return new string(' ', left) + text + new string(' ', right);
+        }
     }
 }

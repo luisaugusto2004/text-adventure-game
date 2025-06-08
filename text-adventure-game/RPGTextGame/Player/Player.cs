@@ -51,6 +51,7 @@ namespace EntityPlayer
             Level = 1;
             IsAlive = true;
             inventory = new Inventory();
+            inventory.SetPlayer(this);
             EquippedWeapon = DefaultWeapon;
             EquippedArmor = DefaultArmor;
         }
