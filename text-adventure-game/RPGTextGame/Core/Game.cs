@@ -17,6 +17,7 @@ namespace Core
         public GameState State = new GameState();
         public SaveLoadHandler Handler = new SaveLoadHandler();
         public List<Room> Rooms = new List<Room>();
+        public Saloon Saloon = new Saloon();
         public void Start()
         {
             State = Handler.Load(this);
@@ -28,7 +29,7 @@ namespace Core
 
             SetCurrentRoom(Rooms, loadedRoom);
 
-            CommandHandler handler = new CommandHandler(this, currentPlayer, ItemShop);
+            CommandHandler handler = new CommandHandler(currentPlayer, ItemShop, this, Saloon);
 
             while (true)
             {
@@ -42,6 +43,11 @@ namespace Core
                     {
                         Console.WriteLine();
                         ItemShop.PrintShop(currentPlayer);
+                    }
+                    if(currentPlayer.CurrentRoom == Rooms.FirstOrDefault(r => r.Name == "Saloon"))
+                    {
+                        Console.WriteLine();
+                        Saloon.PrintShop(currentPlayer);
                     }
                     Console.WriteLine();
                     Console.Write("> ");

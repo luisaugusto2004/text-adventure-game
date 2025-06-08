@@ -77,7 +77,20 @@ namespace EntityPlayer
             Health = MaxHealth;
         }
 
-        public void Heal(ConsumableItem consumableToUse)
+        public void Heal(int health)
+        {
+            int healthBefore = Health;
+            Health += health;
+            if(Health > MaxHealth)
+            {
+                Health = MaxHealth;
+            }
+
+            int healedAmount = Health - healthBefore;
+            Console.WriteLine($"Você devora a comida com gosto e cura {healedAmount}!");
+        }
+
+        public void ItemHeal(ConsumableItem consumableToUse)
         {
             if (consumableToUse != null && inventory.Itens.Contains(consumableToUse))
             {
@@ -92,7 +105,7 @@ namespace EntityPlayer
                 }
 
                 int healedAmount = Health - healthBefore;
-                Console.WriteLine($"Você tomou uma poção e curou {healedAmount}");
+                Console.WriteLine($"Você tomou uma poção e curou {healedAmount}!");
 
             }
             else
@@ -128,9 +141,9 @@ namespace EntityPlayer
             Coins -= amount;
         }
 
-        public bool CanBuy(Item item)
+        public bool CanBuy(int price)
         {
-            if (Coins >= item.Price)
+            if (Coins >= price)
                 return true;
 
             return false;

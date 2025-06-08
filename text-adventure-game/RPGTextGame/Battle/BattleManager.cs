@@ -108,7 +108,7 @@ namespace Battle
             }
             else if (input == "h")
             {
-                player.Heal(player.BuscarPocaoMaisForteNoInventario());
+                player.ItemHeal(player.BuscarPocaoMaisForteNoInventario());
                 Console.ReadLine();
             }
             else if (input == "r")

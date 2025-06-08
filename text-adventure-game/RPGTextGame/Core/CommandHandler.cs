@@ -16,6 +16,7 @@ namespace Core
         private readonly Player player;
         private readonly ItemShop shop;
         private readonly Game game;
+        private readonly Saloon saloon;
 
         public CommandHandler(Player player)
         {
@@ -40,6 +41,13 @@ namespace Core
             this.player = player;
             this.shop = shop;
         }
+
+        public CommandHandler(Player player, ItemShop shop, Game game, Saloon saloon) : this(player, shop)
+        {
+            this.game = game;
+            this.saloon = saloon;
+        }
+
         /// <summary>
         /// Divide o comando bruto que o usuário digitou e realiza a ação correspondente
         /// </summary>
@@ -126,8 +134,15 @@ namespace Core
                 Console.ReadLine();
                 return;
             }
+            if(player.CurrentRoom == game.Rooms.FirstOrDefault(r => r.Name == "Loja"))
+            {
+                shop.ProcessPurchase(player, arg);
+            }
+            else if (player.CurrentRoom == game.Rooms.FirstOrDefault(r => r.Name == "Saloon"))
+            {
+                saloon.ProcessPurchase(player, arg);
+            }
 
-            shop.ProcessPurchase(player, arg);
             Console.ReadLine();
         }
 
@@ -147,7 +162,7 @@ namespace Core
 
             if (consumableItem != null)
             {
-                player.Heal(consumableItem);
+                player.ItemHeal(consumableItem);
             }
             else
             {

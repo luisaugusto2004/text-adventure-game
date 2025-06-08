@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace World
 {
-    class ItemShop
+    class ItemShop : IShop
     {
         public int Id { get; set; }
         public List<Item> Itens { get; private set; } = new List<Item>();           
@@ -86,7 +86,7 @@ namespace World
 
             Item itemSelecionado = Itens[index];
 
-            if (!player.CanBuy(itemSelecionado))
+            if (!player.CanBuy(itemSelecionado.Price))
             {
                 Console.WriteLine("Você não tem ouro suficiente.");
                 return;
