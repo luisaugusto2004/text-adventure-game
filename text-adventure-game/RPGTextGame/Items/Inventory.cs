@@ -1,4 +1,5 @@
 ﻿using EntityPlayer;
+using System.Text;
 using Util;
 
 namespace Items
@@ -34,8 +35,9 @@ namespace Items
             }
         }
 
-        public void ListItens(Player player)
+        public string ListItens(Player player)
         {
+            StringBuilder sb = new StringBuilder();
             List<Item> sortedItems = Itens.OrderBy(i => i.Name).ToList();
             const int boxWidth = 40;
             string topBorder = "╔" + new string('═', boxWidth) + "╗";
@@ -43,13 +45,13 @@ namespace Items
             string middleBorder = "╠" + new string('═', boxWidth) + "╣";
             string bottomBorder = "╚" + new string('═', boxWidth) + "╝";
 
-            Console.WriteLine(topBorder);
-            Console.WriteLine("║" + TextUtils.CenterText(title, boxWidth) + "║");
-            Console.WriteLine(middleBorder);
+            sb.AppendLine(topBorder);
+            sb.AppendLine("║" + TextUtils.CenterText(title, boxWidth) + "║");
+            sb.AppendLine(middleBorder);
 
             if (Itens.Count == 0)
             {
-                Console.WriteLine("║" + TextUtils.CenterText("(vazio)", boxWidth) + "║");
+                sb.AppendLine("║" + TextUtils.CenterText("(vazio)", boxWidth) + "║");
             }
             else
             {
@@ -68,17 +70,18 @@ namespace Items
                         displayText = $"{armor.Name} (+{armor.DefenseAmount} def)";
                         if (player.EquippedArmor?.Name == armor.Name)
                             displayText = "(E) " + displayText;
-                    } 
-                    else if(item is ConsumableItem consumableItem)
+                    }
+                    else if (item is ConsumableItem consumableItem)
                     {
                         displayText = $"{consumableItem.Name} ({consumableItem.Rolls}d{consumableItem.Face}+{consumableItem.BonusHeal} HP)";
                     }
-                        
-                        Console.WriteLine("║" + TextUtils.CenterText(displayText, boxWidth) + "║");
+
+                    sb.AppendLine("║" + TextUtils.CenterText(displayText, boxWidth) + "║");
                 }
             }
-            Console.WriteLine(bottomBorder);
-            Console.ReadLine();
+            sb.AppendLine(bottomBorder);
+
+            return sb.ToString();
         }
 
         public bool HasItem(string item)

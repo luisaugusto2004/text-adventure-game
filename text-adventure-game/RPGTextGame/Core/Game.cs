@@ -5,8 +5,9 @@ using Battle;
 using World;
 using States;
 using System.Text;
+using System.Runtime.CompilerServices;
 
-
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace Core
 {
     class Game
@@ -14,37 +15,64 @@ namespace Core
 
         public Player currentPlayer = new Player();
         public ItemShop ItemShop = new ItemShop();
-        public GameState State = new GameState();
+        public virtual GameState State { get; set; } = new GameState();
         public SaveLoadHandler Handler = new SaveLoadHandler();
-        public List<Room> Rooms = new List<Room>();
+        public virtual List<Room> Rooms { get; set; } = new List<Room>();
         public Saloon Saloon = new Saloon();
         public void Start()
         {
             State = Handler.Load(this);
             Rooms = SetupWorld();
-            currentPlayer = State.PlayerData;
-            ItemShop = State.ShopData;
-            currentPlayer.inventory.SetPlayer(currentPlayer);
-            Room loadedRoom = Rooms.FirstOrDefault(r => r.Name == currentPlayer.CurrentRoomName);
+            if (State.PlayerData == null)
+            {
+                Console.WriteLine("Iniciando novo jogo...");
+                // Crie um novo jogador e defina a sala inicial padrão
+                currentPlayer = new Player("Novo Aventureiro", 30, 10);
+                currentPlayer.SetRoom(Rooms.FirstOrDefault(r => r.Name == "Cemitério")); // Defina a sala inicial real
+                ItemShop = new ItemShop();
+                State = new GameState { PlayerData = currentPlayer, ShopData = ItemShop, StartTime = DateTime.Now };
+                ScriptManager.ScriptedIntroScene(State.PlayerData); // Se for um novo jogo, rode a intro
+                Encounter.FirstEncounter(State.PlayerData, this); // Primeiro encontro
+            }
+            else
+            {
+                // Se o save foi válido, use os dados carregados
+                currentPlayer = State.PlayerData;
+                ItemShop = State.ShopData;
+                currentPlayer.inventory.SetPlayer(currentPlayer);
 
-            SetCurrentRoom(Rooms, loadedRoom);
+                // Agora, encontre a *instância correta* da sala na sua lista 'Rooms'
+                Room loadedRoomInstance = Rooms.FirstOrDefault(r => r.Name == currentPlayer.CurrentRoomName);
 
-            CommandHandler handler = new CommandHandler(currentPlayer, ItemShop, this, Saloon);
+                // Se a sala salva não foi encontrada no mundo recém-criado (pode acontecer se você mudar o nome de uma sala)
+                if (loadedRoomInstance == null)
+                {
+                    Console.WriteLine($"A sala '{currentPlayer.CurrentRoomName}' salva não foi encontrada. Indo para o Cemitério.");
+                    currentPlayer.SetRoom(Rooms.FirstOrDefault(r => r.Name == "Cemitério")); // Defina uma sala padrão segura
+                }
+                else
+                {
+                    currentPlayer.SetRoom(loadedRoomInstance);
+                }
+            }
+
+            CommandHandler handler = new CommandHandler(this, currentPlayer, ItemShop, Saloon);
 
             while (true)
             {
                 while (!BattleManager.GetInCombat())
                 {
+                    var room = currentPlayer.CurrentRoom;
                     // TODO: Fazer uma hud decente                   
                     Console.Clear();
-                    ShowHud(currentPlayer, currentPlayer.CurrentRoom);
+                    Console.WriteLine(ShowHud(currentPlayer, currentPlayer.CurrentRoom));
 
-                    if (currentPlayer.CurrentRoom == Rooms.FirstOrDefault(r => r.Name == "Loja"))
+                    if (room.Name == "Loja")
                     {
                         Console.WriteLine();
                         ItemShop.PrintShop(currentPlayer);
                     }
-                    if(currentPlayer.CurrentRoom == Rooms.FirstOrDefault(r => r.Name == "Saloon"))
+                    if(room.Name == "Saloon")
                     {
                         Console.WriteLine();
                         Saloon.PrintShop(currentPlayer);
@@ -52,21 +80,13 @@ namespace Core
                     Console.WriteLine();
                     Console.Write("> ");
                     string[] input = Console.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                    handler.Handle(input);
-                    Console.Clear();
-                }
-            }
-        }
 
-        public void SetCurrentRoom(List<Room> rooms, Room loadedRoom)
-        {
-            if (loadedRoom != null)
-            {
-                currentPlayer.SetRoom(rooms.FirstOrDefault(r => r.Name == currentPlayer.CurrentRoomName));
-            }
-            else
-            {
-                currentPlayer.SetRoom(rooms.FirstOrDefault(r => r.Name == "Cemitério"));
+                    string resultado = handler.Handle(input);
+                    Console.WriteLine(resultado);
+                    Console.ReadLine();
+                    Console.Clear();
+                    Console.WriteLine("\x1b[3J");
+                }
             }
         }
 
@@ -96,7 +116,7 @@ namespace Core
             return State;
         }
 
-        private List<Room> SetupWorld()
+        public List<Room> SetupWorld()
         {
             List<Room> rooms = new List<Room>();
             Room cemiterio = new Room(
@@ -160,20 +180,22 @@ namespace Core
             return sb.ToString();
         }
 
-        private void ShowHud(Player player, Room currentRoom)
+        private string ShowHud(Player player, Room currentRoom)
         {
             const int boxWidth = 34;
             string topBorder = "┌" + new string('─', boxWidth) + "┐";
             string bottomBorder = "└" + new string('─', boxWidth) + "┘";
-            Console.WriteLine(topBorder);
-            Console.WriteLine("│" + TextUtils.CenterLeftText($"\U0001f9cd Jogador: {player.Name}", boxWidth) + "│");
-            Console.WriteLine("│" + TextUtils.CenterLeftText($"❤️ HP: {player.Health} / {player.MaxHealth}", boxWidth) + "│");
-            Console.WriteLine("│" + TextUtils.CenterLeftText($"💰 Gold: {player.Coins}", boxWidth) + "│");
-            Console.WriteLine("│" + TextUtils.CenterLeftText($"🗺️ Sala: {player.CurrentRoom.Name}", boxWidth) + " │");
-            Console.WriteLine("│" + new string(' ', boxWidth) + "│");
-            Console.Write("│" + TextUtils.CenterLeftText($"Saidas: {PrintCurrentExits(currentRoom)}" , boxWidth) + "│");
-            Console.WriteLine();
-            Console.WriteLine(bottomBorder);
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(topBorder);
+            sb.AppendLine("│" + TextUtils.CenterLeftText($"\U0001f9cd Jogador: {player.Name}", boxWidth) + "│");
+            sb.AppendLine("│" + TextUtils.CenterLeftText($"❤️ HP: {player.Health} / {player.MaxHealth}", boxWidth) + "│");
+            sb.AppendLine("│" + TextUtils.CenterLeftText($"💰 Gold: {player.Coins}", boxWidth) + "│");
+            sb.AppendLine("│" + TextUtils.CenterLeftText($"🗺️ Sala: {player.CurrentRoomName}", boxWidth) + " │");
+            sb.AppendLine("│" + new string(' ', boxWidth) + "│");
+            sb.AppendLine("│" + TextUtils.CenterLeftText($"Saidas: {PrintCurrentExits(currentRoom)}" , boxWidth) + "│");
+            sb.AppendLine(bottomBorder);
+            sb.AppendLine("Cheguei aqui");
+            return sb.ToString();
         }
     }
 }

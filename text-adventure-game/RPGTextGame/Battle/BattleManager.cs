@@ -133,7 +133,6 @@ namespace Battle
                 {
                     SetInCombat(false);
                     Console.WriteLine("Consegue! Você escapa e está fora de combate.");
-                    Console.ReadLine();
                 }
             }
             else
@@ -145,7 +144,6 @@ namespace Battle
 
         public static void EnemyTurn(Player player, Enemy monster)
         {
-
             if (EncapuzadoFirstTurns(player, monster)) return;
             turns++;
             monster.Attack(player);

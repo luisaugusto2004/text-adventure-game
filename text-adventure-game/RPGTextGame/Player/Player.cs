@@ -77,7 +77,7 @@ namespace EntityPlayer
             Health = MaxHealth;
         }
 
-        public void Heal(int health)
+        public string Heal(int health)
         {
             int healthBefore = Health;
             Health += health;
@@ -87,10 +87,10 @@ namespace EntityPlayer
             }
 
             int healedAmount = Health - healthBefore;
-            Console.WriteLine($"Você devora a comida com gosto e cura {healedAmount}!");
+            return $"Você devora a comida com gosto e cura {healedAmount}!";
         }
 
-        public void ItemHeal(ConsumableItem consumableToUse)
+        public string ItemHeal(ConsumableItem consumableToUse)
         {
             if (consumableToUse != null && inventory.Itens.Contains(consumableToUse))
             {
@@ -105,12 +105,12 @@ namespace EntityPlayer
                 }
 
                 int healedAmount = Health - healthBefore;
-                Console.WriteLine($"Você tomou uma poção e curou {healedAmount}!");
+                return $"Você tomou uma poção e curou {healedAmount}!";
 
             }
             else
             {
-                Console.WriteLine("Você procura na sua bolsa... mas não encontra nada");
+                return "Você procura na sua bolsa... mas não encontra nada";
             }
         }
 
@@ -154,7 +154,7 @@ namespace EntityPlayer
             inventory.AddItem(item);
         }
 
-        public void SetRoom(Room room)
+        public virtual void SetRoom(Room room)
         {
             CurrentRoomName = room.Name;
             CurrentRoom = room;
@@ -259,14 +259,12 @@ namespace EntityPlayer
         public void SetWeapon(Weapon weapon)
         {
             EquippedWeapon = weapon;
-            Console.WriteLine($"Você equipou a arma: {weapon.Name}");
         }
 
         public void SetArmor(Armor armor)
         {
             EquippedArmor = armor;
             SetDefense();
-            Console.WriteLine($"Você equipou a armadura: {armor.Name}");
         }
 
         public void EquiparItem(IEquippable item)

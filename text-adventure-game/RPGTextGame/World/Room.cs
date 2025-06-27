@@ -28,6 +28,11 @@ namespace World
             IsHostile = isHostile;
         }
 
+        public void AddExit(string name, Room room)
+        {
+            Exits.Add(name, room);
+        }
+
         public void SetExits(Dictionary<string, Room> exits)
         {
             Exits = exits;

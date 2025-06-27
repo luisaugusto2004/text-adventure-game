@@ -36,28 +36,25 @@ namespace World
             Console.WriteLine("Digite \"comprar <numero da comida que deseja comprar>\"");
         }
 
-        public void ProcessPurchase(Player player, string? arg)
+        public string ProcessPurchase(Player player, string? arg)
         {
             if (!int.TryParse(arg, out int escolha))
             {
-                Console.WriteLine("Escolha invalida");
-                return;
+                return "Escolha invalida";
             }
 
             int index = escolha - 1;
 
             if (index < 0 || index >= comidas.Count)
             {
-                Console.WriteLine("Escreva um valor válido");
-                return;
+                return "Escreva um valor válido";
             }
 
             var itemSelecionado = comidas.ElementAt(index);
 
             if (!player.CanBuy(itemSelecionado.Value))
             {
-                Console.WriteLine("Você não tem ouro suficiente.");
-                return;
+                return "Você não tem ouro suficiente.";
             }
 
             player.LoseGold(itemSelecionado.Value);
@@ -65,14 +62,13 @@ namespace World
             switch (index)
             {
                 case 0:
-                    player.Heal(10);
-                    break;
+                    return player.Heal(10);
                 case 1:
-                    player.Heal(15);
-                    break;
+                    return player.Heal(15);
                 case 2:
-                    player.Heal(20);
-                    break;
+                    return player.Heal(20);
+                default:
+                    return "Placeholder";
             }
         }
     }

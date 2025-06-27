@@ -26,7 +26,7 @@ namespace World
                 new Weapon("Forcado", 2, 8, 100, "\"Ideal para churrascos... se você for o prato principal.\""),
 
                 new Armor("Colete de Couro Reforçado", "Feito para suportar o que vier, com couro endurecido e um toque de perigo.\n" +
-                                                       " Não é perfeito, mas com certeza vai manter você inteiro.", 10, 100),
+                                                       "Não é perfeito, mas com certeza vai manter você inteiro.", 10, 100),
 
                 new Weapon("Motosserra", 10, 8, 500, "Essa relíquia banhada em sangue já enfrentou horrores que fariam o próprio inferno tremer. \n" +
                                                       "Antiga companheira de um homem que trocou a mão por uma promessa de carnificina. Barulhenta, brutal e absurdamente eficaz. \n" +
@@ -68,28 +68,25 @@ namespace World
             Console.WriteLine("Digite \"comprar <numero do item que deseja comprar>\"");
         }
 
-        public void ProcessPurchase(Player player, string? arg)
+        public string ProcessPurchase(Player player, string? arg)
         {
             if (!int.TryParse(arg, out int escolha))
             {
-                Console.WriteLine("Escolha invalida");
-                return;
+                return "Escolha invalida";
             }
 
             int index = escolha - 1;
 
             if (index < 0 || index >= Itens.Count)
             {
-                Console.WriteLine("Escreva um valor válido");
-                return;
+                return "Escreva um valor válido";            
             }
 
             Item itemSelecionado = Itens[index];
 
             if (!player.CanBuy(itemSelecionado.Price))
             {
-                Console.WriteLine("Você não tem ouro suficiente.");
-                return;
+                return "Você não tem ouro suficiente.";
             }
 
             player.LoseGold(itemSelecionado.Price);
@@ -104,7 +101,7 @@ namespace World
                 Itens.Remove(itemSelecionado);
             }
 
-            Console.WriteLine($"Você comprou {itemSelecionado.Name}");
+            return $"Você comprou {itemSelecionado.Name}";
         }
     }
 }

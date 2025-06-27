@@ -1,6 +1,4 @@
-﻿//#define DEBUG_MODE
-
-using Battle;
+﻿using Battle;
 using EntityPlayer;
 using Items;
 using System.Runtime.CompilerServices;
@@ -18,33 +16,11 @@ namespace Core
         private readonly Game game;
         private readonly Saloon saloon;
 
-        public CommandHandler(Player player)
-        {
-            this.player = player;
-        }
-
-        public CommandHandler(Player player, ItemShop shop)
-        {
-            this.player = player;
-            this.shop = shop;
-        }
-
-        public CommandHandler(Player player, Game game)
-        {
-            this.player = player;
-            this.game = game;
-        }
-
-        public CommandHandler(Game game, Player player, ItemShop shop)
+        public CommandHandler(Game game, Player player, ItemShop shop, Saloon saloon)
         {
             this.game = game;
             this.player = player;
             this.shop = shop;
-        }
-
-        public CommandHandler(Player player, ItemShop shop, Game game, Saloon saloon) : this(player, shop)
-        {
-            this.game = game;
             this.saloon = saloon;
         }
 
@@ -53,16 +29,13 @@ namespace Core
         /// </summary>
         /// <param name="input">Comando bruto digitado</param>
         /// <param name="game">Instância atual do jogo usada para executar ações</param>
-        public void Handle(string[] input)
+        public string Handle(string[] input)
         {
             if (input.Length == 0)
             {
-                Console.WriteLine("Digite algum comando");
-                Console.ReadLine();
-                return;
+                return "Digite algum comando";
             }
-            string command = input[0].ToLower();
-            //Separar parâmetro com espaços para verificação mais intuitiva excluindo o espaço na última parte do parâmetro               
+            string command = input[0].ToLower();    
             StringBuilder sb = new StringBuilder();
             for (int i = 1; i < input.Length; i++)
             {
@@ -77,84 +50,58 @@ namespace Core
             switch (command)
             {
                 case "deslocar":
-                #if DEBUG_MODE
-                    Deslocar(arg, true);
-                #else
-                    Deslocar(arg);
-                #endif
-                    break;
+                    return Deslocar(arg);
                 case "lutar":
-                    Lutar();
-                    break;
+                    return Lutar();
                 case "examinar":
-                    Examinar(arg);
-                    break;
+                    return Examinar(arg);
                 case "equipar":
-                    Equipar(arg);
-                    break;
+                    return Equipar(arg);
                 case "status":
-                    Console.WriteLine(game.State.PlayerData);
-                    Console.ReadLine();
-                    break;
+                    return game.State.PlayerData.ToString();
                 case "inventario":
-                    player.inventory.ListItens(player);
-                    break;
+                    return player.inventory.ListItens(player);
                 case "usar":
-                #if DEBUG_MODE
-                    Usar(arg, true);
-                    break;
-                #else
-                    Usar(arg);
-                    break;
-                #endif
+                    return Usar(arg);
                 case "comprar":
-                    Comprar(arg);
-                    break;
+                    return Comprar(arg);
                 case "sair":
-                    Quit(game);
-                    break;
+                    return Quit(game);
                 default:
-                    Console.WriteLine("Digite um comando válido");
-                    Console.ReadLine();
-                    break;
+                    return "Digite um comando válido";
             }
         }
 
-        private void Quit(Game game)
+        private string Quit(Game game)
         {
             game.SaveGame();
             Environment.Exit(0);
+            return "Saindo do jogo...";
         }
 
-        private void Comprar(string? arg)
+        private string Comprar(string? arg)
         {
             if (string.IsNullOrWhiteSpace(arg))
             {
-                Console.WriteLine("Digite o número do que você quer comprar");
-                Console.ReadLine();
-                return;
+                return "Digite o número do que você quer comprar";
             }
             if(player.CurrentRoom == game.Rooms.FirstOrDefault(r => r.Name == "Loja"))
             {
-                shop.ProcessPurchase(player, arg);
+                return shop.ProcessPurchase(player, arg);
             }
             else if (player.CurrentRoom == game.Rooms.FirstOrDefault(r => r.Name == "Saloon"))
             {
-                saloon.ProcessPurchase(player, arg);
+                return saloon.ProcessPurchase(player, arg);
             }
-
-            Console.ReadLine();
+            return "Não é possível comprar aqui.";
         }
 
-        private void Usar(string? arg, bool isTest = false)
+        private string Usar(string? arg)
         {
 
             if (string.IsNullOrWhiteSpace(arg))
             {
-                Console.WriteLine("Digite algo para usar");
-                if(!isTest)
-                    Console.ReadLine();
-                return;
+                return "Digite algo para usar";
             }
 
             var nameItem = TextUtils.RemoverAcentos(arg);
@@ -162,23 +109,19 @@ namespace Core
 
             if (consumableItem != null)
             {
-                player.ItemHeal(consumableItem);
+                return player.ItemHeal(consumableItem);
             }
             else
             {
-                Console.WriteLine("Você não tem esse item no inventario");
-            }
-            if(!isTest)
-                Console.ReadLine();
+                return "Você não tem esse item no inventario";
+            }        
         }
 
-        private void Equipar(string? arg)
+        private string Equipar(string? arg)
         {
             if (string.IsNullOrWhiteSpace(arg))
             {
-                Console.WriteLine("Digite algo para equipar");
-                Console.ReadLine();
-                return;
+                return "Digite algo para equipar";
             }
 
             var nameItem = TextUtils.RemoverAcentos(arg);
@@ -186,91 +129,83 @@ namespace Core
             if (itemToEquip != null)
             {
                 player.EquiparItem(itemToEquip);
+                return $"Você equipou {itemToEquip.Name}.";
             }
             else
             {
-                Console.WriteLine("Você não tem esse item no inventario");
+                return "Você não tem esse item no inventario";
             }
-            Console.ReadLine();
         }
 
-        private void Examinar(string? arg)
+        private string Examinar(string? arg)
         {
             if (string.IsNullOrWhiteSpace(arg))
             {
-                Console.WriteLine("Digite o que quer examinar");
-                Console.ReadLine();
-                return;
+                return "Digite o que quer examinar";
             }
 
             string argSemAcento = TextUtils.RemoverAcentos(arg.ToLower());
 
             if (arg == "sala")
-            {
-                Console.WriteLine(player.CurrentRoom.Description);
-                return;
+            {              
+                return player.CurrentRoom.Description;
             }
+            string? itemDescription = GetItemDescription(player.inventory.Itens, argSemAcento);
+            if (itemDescription != null) return itemDescription;
 
-            if (TryShowItemDescription(player.inventory.Itens, argSemAcento)) return;
-
-            if (player.CurrentRoom.Name == "Loja" && TryShowItemDescription(shop.Itens, argSemAcento)) return;
-
-            Console.WriteLine("Escolha algo válido para examinar");
-            Console.ReadLine();
+            if (player.CurrentRoom.Name == "Loja")
+            {
+                itemDescription = GetItemDescription(shop.Itens, argSemAcento);
+                if(itemDescription != null) return itemDescription;
+            }
+            return "Escolha algo válido para examinar";
         }
 
-        bool TryShowItemDescription(IEnumerable<Item> itens, string arg)
+        string? GetItemDescription(IEnumerable<Item> itens, string arg)
         {
             foreach (var item in itens)
             {
                 string nome = TextUtils.RemoverAcentos(item.Name.ToLower());
                 if (arg == nome)
                 {
-                    Console.WriteLine(item.Description);
-                    Console.ReadLine();
-                    return true;
+                    return item.Description;
+
                 }
             }
-            return false;
+            return null;
         }
 
-        private void Lutar()
+        private string Lutar()
         {
             if (player.CurrentRoom.IsHostile)
             {
                 BattleManager.SetFight();
                 while (BattleManager.GetInCombat())
                     Encounter.RandomEncounter(player, game);
+                return "A batalha acabou";
             }
             else
             {
-                Console.WriteLine("Não há com o que lutar aqui.");
-                Console.ReadLine();
+                return  "Não há com o que lutar aqui.";
             }
         }
 
-        private void Deslocar(string? arg, bool isTest = false)
+        private string Deslocar(string? arg)
         {
             if (string.IsNullOrWhiteSpace(arg))
             {
-                Console.WriteLine("Digite para onde quer ir");
-                if (!isTest)
-                    Console.ReadLine();
-                return;
+                return "Digite para onde quer ir";
             }
 
             if (player.CurrentRoom.Exits.TryGetValue(arg, out Room nextRoom))
             {
                 player.SetRoom(nextRoom);
-                Console.WriteLine($"Você se moveu para {player.CurrentRoom.Name}.");
-
+                return $"Você se moveu para {player.CurrentRoomName}.";
             }
             else
             {
-                Console.WriteLine("Modo de usar: deslocar <saida>");
+                return "Modo de usar: deslocar <saida>";
             }
-            if (!isTest)
-                Console.ReadLine();
         }
     }
 }
